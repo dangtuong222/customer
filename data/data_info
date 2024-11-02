@@ -1,0 +1,57 @@
+- ID: Mã số của khách hàng
+
+- Year_Birth: Năm sinh của khách hàng
+
+- Education: Trình độ học vấn của khách hàng
+
+- Marital_Status: Tình trạng hôn nhân của khách hàng
+
+- Income: Thu nhập hộ gia đình hàng năm của khách hàng
+
+- Kidhome: Số trẻ nhỏ trong gia đình khách hàng
+
+- Teenhome: Số thanh thiếu niên trong gia đình khách hàng
+
+- Dt_Customer: Ngày khách hàng đăng ký làm việc với công ty
+
+- Recency: Số ngày kể từ lần mua cuối cùng
+
+- MntWines: Số tiền chi cho sản phẩm rượu vang trong 2 năm qua
+
+- MntFruits: Số tiền chi cho sản phẩm trái cây trong 2 năm qua
+
+- MntMeatProducts: Số tiền chi cho sản phẩm thịt trong 2 năm qua
+
+- MntFishProducts: Số tiền chi cho sản phẩm cá trong 2 năm qua
+
+- MntSweetProducts: Số tiền chi cho đồ ngọt trong 2 năm qua
+
+- MntGoldProds: Số tiền chi cho sản phẩm vàng trong 2 năm qua
+
+- NumDealsPurchases: Số lần mua hàng được giảm giá
+
+- NumWebPurchases: Số lượng mua hàng được thực hiện thông qua trang web của công ty
+
+- NumCatalogPurchases: Số lần mua hàng được thực hiện bằng danh mục
+
+- NumStorePurchases: Số lần mua hàng trực tiếp tại cửa hàng
+
+- NumWebVisitsMonth: Số lượng mua hàng được thực hiện thông qua trang web của công ty
+
+- AcceptedCmp3: 1 nếu khách hàng chấp nhận ưu đãi trong chiến dịch thứ 3, 0 nếu ngược lại
+
+- AcceptedCmp4: 1 nếu khách hàng chấp nhận ưu đãi trong chiến dịch thứ 4, 0 nếu ngược lại
+
+- AcceptedCmp5: 1 nếu khách hàng chấp nhận ưu đãi trong chiến dịch thứ 5, 0 nếu ngược lại
+
+- AcceptedCmp1: 1 nếu khách hàng chấp nhận ưu đãi trong chiến dịch thứ 1, 0 nếu ngược lại
+
+- AcceptedCmp2: 1 nếu khách hàng chấp nhận ưu đãi trong chiến dịch thứ 2, 0 nếu ngược lại
+
+- Complain: 1 nếu khách hàng phàn nàn trong 2 năm qua
+
+- Z_CostContact: Chi phí liên hệ với khách hàng
+
+- Z_Revenue: Doanh thu sau khi khách hàng chấp nhận chiến dịch
+
+- Response: 1 nếu khách hàng chấp nhận ưu đãi trong chiến dịch trước, 0 nếu không
