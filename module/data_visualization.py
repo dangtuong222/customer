@@ -50,21 +50,16 @@ def bieu_do_phan_tich_ty_le_chap_nhan_chien_dich_cua_khach_hang():
      #hiển thị biểu đồ
      plt.show()
 def bieu_do_tan_suat_mua_hang_theo_do_tuoi():
-    """
-    Vẽ biểu đồ cột thể hiện tần suất mua hàng của khách hàng dựa vào độ tuổi.
     
-    Tham số:
-    df (DataFrame): DataFrame chứa dữ liệu khách hàng với các cột về tần suất mua hàng
-                    ('NumDealsPurchases', 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases')
-                    và một cột 'Year_Birth' để tính toán độ tuổi.
-    """
-    # Tính tuổi của khách hàng từ năm sinh
+    # Tính tuổi của khách hàng từ năm sinh cho đến năm hiện tại
     current_year = pd.Timestamp.now().year
-    data_cleaning.custom_df['Age'] = data_cleaning.current_year - data_cleaning.custom_df['Year_Birth']
+    # tạo cột mới tính tuổi bằng cách lấy năm hiện tại trừ đi cột year birth của từng khách hàng
+    data_cleaning.custom_df['Age'] = current_year - data_cleaning.custom_df['Year_Birth']
     
-    # Phân loại nhóm tuổi
+    # Phân loại nhóm tuổi bằng cách tạo ra cột mới là AgeGroup
     bins = [0, 20, 30, 40, 50, 60, 70, 80, 100]
     labels = ['<20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80+']
+    #Chia dữ liệu trong cột Age thành các khoảng giá trị (hoặc nhóm) dựa trên các giá trị trong bins và gán nhãn cho #từng nhóm theo danh sách labels.
     data_cleaning.custom_df['AgeGroup'] = pd.cut(data_cleaning.custom_df['Age'], bins=bins, labels=labels)
 
     # Tính tổng tần suất mua hàng theo nhóm tuổi
@@ -74,19 +69,15 @@ def bieu_do_tan_suat_mua_hang_theo_do_tuoi():
     tan_suat_tuoi.plot(kind='bar', stacked=True, figsize=(12, 7), edgecolor='black')
     plt.xlabel("Nhóm Tuổi")
     plt.ylabel("Tần Suất Mua Hàng")
+    #đặt giới hạn cho cột y
+    plt.ylim(0, 10000)
     plt.title("Tần Suất Mua Hàng Qua Các Kênh Theo Nhóm Tuổi")
     plt.legend(["Deals", "Web", "Catalog", "Store"], title="Kênh Mua Hàng")
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=30)#xoay nhãn trục x 30 độ 
     plt.show()
 def bieu_do_tron_phan_tich_hinh_thuc_mua_hang(df = data_cleaning.custom_df):
-    """
-    Vẽ biểu đồ tròn để phân tích tỷ lệ hình thức mua hàng của khách hàng qua các kênh mua sắm.
-    
-    Tham số:
-    df (DataFrame): DataFrame chứa dữ liệu khách hàng với các cột tần suất mua hàng qua các kênh
-                    ('NumDealsPurchases', 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases').
-    """
-    # Tính tổng số lần mua hàng qua các kênh
+    # truyền 
+    # Tính tổng số lần mua hàng qua các kênh bằng hàm sum
     hinh_thuc_mua_hang = {
         'Deals': df['NumDealsPurchases'].sum(),
         'Web': df['NumWebPurchases'].sum(),
@@ -96,6 +87,7 @@ def bieu_do_tron_phan_tich_hinh_thuc_mua_hang(df = data_cleaning.custom_df):
 
     # Vẽ biểu đồ tròn
     plt.figure(figsize=(8, 8))
-    plt.pie(hinh_thuc_mua_hang.values(), labels=hinh_thuc_mua_hang.keys(), autopct='%1.1f%%', startangle=140, colors=['#ff9999','#66b3ff','#99ff99','#ffcc99'])
-    plt.title("Tỷ Lệ Hình Thức Mua Hàng Qua Các Kênh")
+    plt.pie(hinh_thuc_mua_hang.values(), labels=hinh_thuc_mua_hang.keys(), autopct='%1.1f%%', startangle=0, colors=['#ff9999','#66b3ff','#99ff99','#ffcc99'])
+    plt.title("Tỷ lệ hình thức mua hàng qua các kênh")
     plt.show()
+
