@@ -333,3 +333,18 @@ def chien_dich_uu_dai():
     # Hiển thị biểu đồ
     plt.show()
     
+def bieu_do_so_luong_trung_binh_cua_tung_loai_san_pham():
+    product_columns = ['MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds']
+
+    # Tính số lượng trung bình của từng loại sản phẩm
+    average_quantities = CRUD.custom_df[product_columns].mean()
+
+    # Vẽ biểu đồ cột
+    plt.figure(figsize=(10, 6))
+    average_quantities.plot(kind='bar', color='skyblue', edgecolor='black')
+    plt.title("Số lượng trung bình của từng loại sản phẩm")
+    plt.xlabel("Loại sản phẩm")
+    plt.ylabel("Số lượng trung bình")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
