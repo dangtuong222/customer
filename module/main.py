@@ -1,3 +1,4 @@
 import data_cleaning
 import data_connection
 import data_visualization
+data_visualization.bieu_do_phan_tich_muc_do_phan_nan()
