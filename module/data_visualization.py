@@ -21,18 +21,9 @@ def do_thi_phan_bo_do_tuoi():
     plt.show()
     
 def do_thi_CDF_tong_so_mua_hang():
-    
-    # SẮP XẾP DỮ LIỆU
-    sorted_data = np.sort(CRUD.custom_df['Total_Purchases'])
-
-    # TÍNH TOÁN CDF
-    #Tạo một mảng y với các giá trị từ 1 đến số lượng phần tử trong sorted_data, 
-    #sau đó chia cho tổng số phần tử để tính tỷ lệ tích lũy. Mảng y này thể hiện tỷ lệ phần trăm dữ liệu dưới mỗi giá trị trong sorted_data.
-    y = np.arange(1, len(sorted_data) + 1) / len(sorted_data)
-
     # TẠO ĐỒ THỊ CDF    
     plt.figure(figsize=(8, 6))
-    plt.step(sorted_data, y, color="red", linestyle='--', linewidth=1)
+    plt.step(CRUD.sorted_data, CRUD.y, color="red", linestyle='--', linewidth=1)
 
     # TÙY CHỈNH CỘT X,Y
     plt.xticks(np.arange(0,50, step=5))
@@ -47,55 +38,36 @@ def do_thi_CDF_tong_so_mua_hang():
 
     plt.show()
     
-def do_thi_luot_mua_hang():
+# def do_thi_luot_mua_hang():
     
-    # SẮP XẾP DỮ LIỆU
-    sorted_data = np.sort(CRUD.custom_df['Total_Purchases'])
+#     # SẮP XẾP DỮ LIỆU
+#     sorted_data = np.sort(CRUD.custom_df['Total_Purchases'])
 
-    # TÍNH TOÁN CDF
-    #Tạo một mảng y với các giá trị từ 1 đến số lượng phần tử trong sorted_data, 
-    #sau đó chia cho tổng số phần tử để tính tỷ lệ tích lũy. Mảng y này thể hiện tỷ lệ phần trăm dữ liệu dưới mỗi giá trị trong sorted_data.
-    y = np.arange(1, len(sorted_data) + 1) / len(sorted_data)
+#     # TÍNH TOÁN CDF
+#     #Tạo một mảng y với các giá trị từ 1 đến số lượng phần tử trong sorted_data, 
+#     #sau đó chia cho tổng số phần tử để tính tỷ lệ tích lũy. Mảng y này thể hiện tỷ lệ phần trăm dữ liệu dưới mỗi giá trị trong sorted_data.
+#     y = np.arange(1, len(sorted_data) + 1) / len(sorted_data)
 
-    # TẠO ĐỒ THỊ CDF    
-    plt.figure(figsize=(8, 6))
-    plt.step(sorted_data, y, color="red", linestyle='--', linewidth=1)
+#     # TẠO ĐỒ THỊ CDF    
+#     plt.figure(figsize=(8, 6))
+#     plt.step(sorted_data, y, color="red", linestyle='--', linewidth=1)
 
-    # TÙY CHỈNH CỘT X,Y
-    plt.xticks(np.arange(0,50, step=5))
-    plt.yticks(np.arange(0, 1.1, 0.1))
+#     # TÙY CHỈNH CỘT X,Y
+#     plt.xticks(np.arange(0,50, step=5))
+#     plt.yticks(np.arange(0, 1.1, 0.1))
 
-    # GẮN NHÃN
-    plt.xlabel('Tổng số mua hàng')
-    plt.ylabel('Phân phối tích lũy')
+#     # GẮN NHÃN
+#     plt.xlabel('Tổng số mua hàng')
+#     plt.ylabel('Phân phối tích lũy')
 
-    # ÁP DỤNG BG
-    plt.style.use('ggplot')
+#     # ÁP DỤNG BG
+#     plt.style.use('ggplot')
 
-    plt.show()
+#     plt.show()
     
 def bieu_do_phan_tich_hinh_thuc_mua_hang():
-    
-    # Giả sử bạn có DataFrame tên là custom_df
-    # Chọn các cột chứa cả 'Num' và 'Purchases' trong tên cột
-    purchase_columns = [col for col in CRUD.custom_df.columns if 'Num' in col and 'Purchases' in col]
-    purchase_df = CRUD.custom_df[purchase_columns]
-
-    # Làm phẳng DataFrame thành danh sách và tạo DataFrame mới với tên phương thức mua lặp lại
-    total_purchases = purchase_df.values.flatten()
-    purchase_names = ['Deal', 'Web', 'Catalog', 'Store'] * (len(total_purchases) // 4)
-
-    # Tạo DataFrame cho Phương thức mua và Tổng lượt mua
-    combined_df = pd.DataFrame({
-        'Phương thức mua': purchase_names,
-        'Tổng lượt mua': total_purchases
-    })
-
-    # Hiển thị 4 hàng đầu tiên của DataFrame kết quả
-    print(combined_df.head(4))
-    
     # Tạo biểu đồ boxplot
-    sns.boxplot(data=combined_df, 
+    sns.boxplot(data=CRUD.combined_df, 
                 x='Phương thức mua', 
                 y='Tổng lượt mua', 
                 hue='Phương thức mua', 
@@ -111,22 +83,8 @@ def bieu_do_phan_tich_hinh_thuc_mua_hang():
     plt.xticks(rotation=45)  # Xoay nhãn trục x nếu cần
     plt.legend(title='Phương thức mua')  # Hiển thị chú giải nếu muốn
     plt.show()
-    
-    
-    # Giả sử bạn có một DataFrame tên là combined_df
-    # Nhóm theo 'Phương thức mua' và tính tổng 'Tổng lượt mua' cho mỗi nhóm
-    grouped_df = combined_df.groupby('Phương thức mua')['Tổng lượt mua'].sum().reset_index()
-
-    # Tính phần trăm và làm tròn đến 2 chữ số thập phân
-    grouped_df['Phần trăm'] = (grouped_df['Tổng lượt mua'] * 100 / grouped_df['Tổng lượt mua'].sum()).round(2)
-
-    # Hiển thị DataFrame kết quả
-    print(grouped_df)
-    # -------------------------- 
 
 def do_thi_so_luot_truy_cap_web():
-    
-    # 
     # Plotting histogram
     plt.hist(CRUD.custom_df['NumWebVisitsMonth'], weights=np.ones(len(CRUD.custom_df['Total_Purchases'])) / len(CRUD.custom_df['Total_Purchases'])*100, bins=5, alpha=0.5, color='pink', edgecolor='darkblue')
 
@@ -148,16 +106,9 @@ def do_thi_so_luot_truy_cap_web():
     plt.show()
     
 def do_thi_CDF_truy_cap_web():
-    
-    # Sắp xếp
-    sorted_purchases = np.sort(CRUD.custom_df['NumWebVisitsMonth'])
-
-    # Tính CDF
-    y = np.arange(1, len(sorted_purchases) + 1) / len(sorted_purchases)
-
     # Tạo biểu đồ CDF
     plt.figure(figsize=(8, 6))
-    plt.step(sorted_purchases, y, color="#00AFBB", linestyle='--', linewidth=1)
+    plt.step(CRUD.sorted_purchases, CRUD.y, color="#00AFBB", linestyle='--', linewidth=1)
 
     # Thiết lập trục x,y
     plt.xticks(np.arange(0,20, step=1))
@@ -169,36 +120,19 @@ def do_thi_CDF_truy_cap_web():
 
     # Thêm BG dang 
     plt.style.use('ggplot')
-
     # Show the plot
     plt.show()
-
     #95% khách hàng truy cập website ít hơn 9 lần.
     
 def do_thi_dtf_tham_nien_khach_hang():
-    # Đổi tên cột 'Seniority' thành 'Total_Years' trong DataFrame
-    tham_nien = CRUD.custom_df[['Seniority']].rename(columns={'Seniority': 'Tổng Năm'})
-
-    # Nhóm theo 'Tổng Năm' và tính số lượng mỗi nhóm
-    tham_nien = tham_nien.groupby('Tổng Năm').size().reset_index(name='số_lượng')
-
-    # Tính phần trăm và làm tròn đến 2 chữ số thập phân
-    tham_nien['phần_trăm'] = (tham_nien['số_lượng'] * 100 / tham_nien['số_lượng'].sum()).round(2)
-
-    # Chuyển đổi 'Tổng Năm' thành biến phân loại (categorical)
-    tham_nien['Tổng Năm'] = tham_nien['Tổng Năm'].astype('category')
-    
-    # Hiển thị kết quả:
-    print(tham_nien)
-
     sns.set(style="whitegrid")  # Thiết lập phong cách đồ thị là lưới trắng
 
     # Tạo biểu đồ cột sử dụng seaborn
-    sns.barplot(x='Tổng Năm', y='số_lượng', data=tham_nien, palette=["#41B7C4", "#CCEDB1", "#F5CA63"])
+    sns.barplot(x='Tổng Năm', y='số_lượng', data=CRUD.tham_nien, palette=["#41B7C4", "#CCEDB1", "#F5CA63"])
 
     # Thêm nhãn văn bản với phần trăm   
-    for index, row in tham_nien.iterrows():
-        plt.text(index, row['số_lượng'], f"{row['số_lượng']} ({row['phần_trăm']}%)", va='bottom', ha='center')
+    for index, row in CRUD.tham_nien.iterrows():
+        plt.text(index, row['số_lượng'], f"{row['số_lượng']} ({row['Phần Trăm']}%)", va='bottom', ha='center')
 
     # Tùy chỉnh nhãn và tỷ lệ
     plt.xlabel('Số Năm')
@@ -208,21 +142,9 @@ def do_thi_dtf_tham_nien_khach_hang():
     plt.show()
     
 def do_thi_phan_bo_thoi_gian_gan_bo():
-    # Đổi tên cột 'Seniority' thành 'Total_Years' trong DataFrame
-    tham_nien = CRUD.custom_df[['Seniority']].rename(columns={'Seniority': 'Tổng Năm'})
-
-    # Nhóm theo 'Tổng Năm' và tính số lượng mỗi nhóm
-    tham_nien = tham_nien.groupby('Tổng Năm').size().reset_index(name='Số Lượng')
-
-    # Tính phần trăm và làm tròn đến 2 chữ số thập phân
-    tham_nien['Phần Trăm'] = (tham_nien['Số Lượng'] * 100 / tham_nien['Số Lượng'].sum()).round(2)
-
-    # Chuyển đổi 'Tổng Năm' thành biến phân loại (categorical)
-    tham_nien['Tổng Năm'] = tham_nien['Tổng Năm'].astype('category')
-
     # Data
-    labels = tham_nien['Tổng Năm']
-    sizes = tham_nien['Phần Trăm']
+    labels = CRUD.tham_nien['Tổng Năm']
+    sizes = CRUD.tham_nien['Phần Trăm']
     colors = ["#41B7C4", "#CCEDB1", "#F5CA63", "#808A87"]
 
     # Create a pie chart
@@ -232,22 +154,8 @@ def do_thi_phan_bo_thoi_gian_gan_bo():
     plt.show()
     
 def do_thi_tong_chi_tieu_cac_nam():
-    # Giả sử custom_df đã được định nghĩa
-    
-    # Nhóm theo 'Enrollment_Year' và tính tổng 'Total_Spent' cho mỗi nhóm
-    grouped_df = CRUD.custom_df.groupby('Enrollment_Year')['Total_Spent'].sum().reset_index()
-
-    # Tính phần trăm và làm tròn đến 2 chữ số thập phân
-    grouped_df['percentage'] = (grouped_df['Total_Spent'] * 100 / grouped_df['Total_Spent'].sum()).round(2)
-
-    # Đổi tên các cột sang tiếng Việt để in kết quả
-    grouped_df.columns = ['Năm Đăng Ký', 'Tổng Chi Tiêu', 'Phần Trăm']
-
-    # Hiển thị kết quả
-    print(grouped_df)
-    
-    labels = grouped_df['Năm Đăng Ký']
-    sizes = grouped_df['Phần Trăm']
+    labels = CRUD.grouped_df['Năm Đăng Ký']
+    sizes = CRUD.grouped_df['Phần Trăm']
     colors = ["#41B7C4", "#CCEDB1", "#F5CA63", "#808A87"]
     
     plt.pie(sizes, labels=labels, colors=colors, autopct='%1.2f%%', startangle=140)
@@ -256,30 +164,14 @@ def do_thi_tong_chi_tieu_cac_nam():
     plt.show()
     
 def hieu_suat_chien_dich():
-    # Đổi tên cột 'Total_Offers' thành 'Offers_Total'
-    offers = CRUD.custom_df[['Total_Offers']].rename(columns={'Total_Offers': 'Offers_Total'})
-
-    # Nhóm theo 'Offers_Total' và tính số lượng mỗi nhóm
-    offers = offers.groupby('Offers_Total').size().reset_index(name='num')
-
-    # Tính phần trăm và làm tròn đến 2 chữ số thập phân
-    # Chú ý: nên sử dụng tổng của cột 'num' trong DataFrame 'offers' chứ không phải 'seniority'
-    offers['percentage'] = (offers['num'] * 100 / offers['num'].sum()).round(2)
-
-    # Chuyển đổi 'Offers_Total' thành biến phân loại (categorical)
-    offers['Offers_Total'] = offers['Offers_Total'].astype('category')
-
-    # Hiển thị DataFrame kết quả
-    print(offers)
-    
     sns.set(style="whitegrid")  # Thiết lập phong cách đồ thị là lưới trắng
 # Tạo biểu đồ cột sử dụng seaborn
-    sns.barplot(x='Offers_Total', y='num', data=offers, palette="Set2")
-
+    sns.barplot(x='Offers_Total', y='num', data=CRUD.offers, palette="Set2")
+    
     # Thêm nhãn văn bản với phần trăm
-    for index, row in offers.iterrows():
+    for index, row in CRUD.offers.iterrows():
         plt.text(index, row['num'], f"{row['num']} ({row['percentage']}%)", va='bottom', ha='center')
-
+        
     # Tùy chỉnh nhãn và tỷ lệ
     plt.xlabel('Tổng số ưu đãi')
     plt.ylabel('Số lượng')
@@ -288,43 +180,14 @@ def hieu_suat_chien_dich():
     plt.show()
 
 def chien_dich_uu_dai():
-    # Giả sử custom_df đã được định nghĩa
-    cmp_df = CRUD.custom_df[['AcceptedCmp1', 'AcceptedCmp2', 'AcceptedCmp3', 'AcceptedCmp4', 'AcceptedCmp5']]
-    # Kiểm tra số lượng khách hàng
-    num_customers = cmp_df.shape[0]
-    # Tạo cột Campaign
-    Campaign = pd.DataFrame({'Chiến dịch': ['Chiến dịch 1', 'Chiến dịch 2', 'Chiến dịch 3', 'Chiến dịch 4', 'Chiến dịch 5'] * num_customers})
-    # Tạo cột No_Of_Offers
-    No_Of_Offers = pd.DataFrame({'Số lượt ưu đãi': cmp_df.values.flatten()})
-    # Kết hợp Campaign và No_Of_Offers vào cmp_df
-    cmp_df = pd.concat([Campaign, No_Of_Offers], axis=1)
-    # Hiển thị 3 hàng đầu tiên
-    print(cmp_df.head(5))
-    print("\n")
-    
-    # Lọc các hàng mà Số Lượng Ưu Đãi bằng 1
-    df_loc = cmp_df[cmp_df['Số lượt ưu đãi'] == 1]
-    # Nhóm theo Chiến Dịch và tính số lượng hàng trong mỗi nhóm
-    df_nhom = df_loc.groupby('Chiến dịch').size().reset_index(name='Số Lượng')
-    # Tính phần trăm
-    df_nhom['Phần Trăm'] = (df_nhom['Số Lượng'] * 100 / df_nhom['Số Lượng'].sum()).round(2)
-    # Hiển thị kết quả
-    print(df_nhom)
-    print("\n")
-    
-    # Nhóm dữ liệu khách hàng theo 'Total_Offers' và tính giá trị trung vị của 'Income'
-    result_df = CRUD.custom_df.groupby('Total_Offers').agg(avg_spend=('Income', 'median')).reset_index().round(0)
-    result_df.columns = ['Tổng Số Ưu Đãi', 'Chi Tiêu TB']
-    print(result_df)
-    
     # Thiết lập phong cách biểu đồ
     sns.set(style="whitegrid")
 
     # Tạo biểu đồ thanh sử dụng seaborn
-    sns.barplot(x='Chiến dịch', y='Số Lượng', data=df_nhom)
+    sns.barplot(x='Chiến dịch', y='Số Lượng', data=CRUD.df_nhom)
 
     # Thêm nhãn văn bản với phần trăm
-    for index, row in df_nhom.iterrows():
+    for index, row in CRUD.df_nhom.iterrows():
         plt.text(index, row['Số Lượng'], f"{row['Số Lượng']} ({row['Phần Trăm']}%)", va='bottom', ha='center')
 
     # Tùy chỉnh nhãn và thang đo
@@ -334,14 +197,9 @@ def chien_dich_uu_dai():
     plt.show()
     
 def bieu_do_so_luong_trung_binh_cua_tung_loai_san_pham():
-    product_columns = ['MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds']
-
-    # Tính số lượng trung bình của từng loại sản phẩm
-    average_quantities = CRUD.custom_df[product_columns].mean()
-
     # Vẽ biểu đồ cột
     plt.figure(figsize=(10, 6))
-    average_quantities.plot(kind='bar', color='skyblue', edgecolor='black')
+    CRUD.average_quantities.plot(kind='bar', color='skyblue', edgecolor='black')
     plt.title("Số lượng trung bình của từng loại sản phẩm")
     plt.xlabel("Loại sản phẩm")
     plt.ylabel("Số lượng trung bình")
