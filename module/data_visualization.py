@@ -367,7 +367,7 @@ def chien_dich_uu_dai():
     plt.ylabel('Số Lượng')
     # Hiển thị biểu đồ
     plt.show()
-# Biểu đồ thứ 1: Biểu đồ thanh cho Số lượng trung bình của mỗi loại sản phẩm
+#Biểu đồ thanh cho Số lượng trung bình của mỗi loại sản phẩm
 # Chọn các cột sản phẩm liên quan
 product_columns = ['MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds']
 # Tính trung bình cho mỗi loại sản phẩm
@@ -383,7 +383,7 @@ plt.xticks(rotation=45)
 plt.tight_layout()  # Tự động điều chỉnh bố cục để biểu đồ không bị cắt
 plt.show()
 
-# Biểu đồ thứ 2: Biểu đồ phân phối độ tuổi của khách hàng
+# Biểu đồ phân phối độ tuổi của khách hàng
 # Tạo cột Age dựa trên năm sinh của khách hàng
 current_year = 2024
 data['Age'] = current_year - data['Year_Birth']
@@ -407,7 +407,7 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
 
-# Biểu đồ thứ 3: So sánh tổng thu nhập và tổng chi tiêu của 50 khách hàng đầu tiên
+# So sánh tổng thu nhập và tổng chi tiêu của 50 khách hàng đầu tiên
 # Tính tổng chi tiêu của mỗi khách hàng qua các loại sản phẩm
 data['Total_Expenditure'] = data[product_columns].sum(axis=1)
 # Loại bỏ các hàng thiếu dữ liệu thu nhập
@@ -429,7 +429,7 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-# Biểu đồ thứ 4: Biểu đồ phân phối số lượng lượt truy cập web mỗi tháng
+# Biểu đồ phân phối số lượng lượt truy cập web mỗi tháng
 # Lấy cột số lượt truy cập web
 web_visits = data['NumWebVisitsMonth']
 
@@ -442,7 +442,7 @@ plt.ylabel('Frequency')
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.show()
 
-# Biểu đồ thứ 5: Biểu đồ thanh cho tổng số lượng mua hàng theo vị trí
+# Biểu đồ thanh cho tổng số lượng mua hàng theo vị trí
 # Tổng hợp số lượng mua hàng ở các vị trí khác nhau (web, catalog, cửa hàng)
 purchase_locations = data[['NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases']].sum()
 
