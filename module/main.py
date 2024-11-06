@@ -1,3 +1,5 @@
+import data_cleaning
+import data_connection
 import data_visualization
+import CRUD
 
-data_visualization.bieu_do_so_luong_trung_binh_cua_tung_loai_san_pham()
