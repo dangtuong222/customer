@@ -1,4 +1,4 @@
-import Read as Read
+import CRUD.Read as Read
 from tkinter import messagebox
 def Delete_by_ID(id):
     df = Read.read()

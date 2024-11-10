@@ -1,178 +1,236 @@
-from ast import Delete
 import tkinter as tk
 from tkinter import ttk, messagebox
+from CRUD.Create import Create
+from CRUD.Read import read
+from CRUD.Delete import Delete_by_ID
+from CRUD.Update import update_row_by_id
+import Data_visualization as DataViz
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import CRUD.Create as Create
-import Data_visualization
-import CRUD.Read as Read
-import CRUD.Update as Update
 
-# class MarketingCampaignUI:
-#     def __init__(self, master):
-#         self.master = master
-#         self.master.title("Marketing Campaign Analysis")
-#         self.master.geometry("1000x600")
 
-#         # Create notebook (tabbed interface)
-#         self.notebook = ttk.Notebook(self.master)
-#         self.notebook.pack(expand=True, fill='both')
 
-#         # Create tabs
-#         self.view_tab = ttk.Frame(self.notebook)
-#         self.create_tab = ttk.Frame(self.notebook)
-#         self.update_tab = ttk.Frame(self.notebook)
-#         self.delete_tab = ttk.Frame(self.notebook)
-#         self.visualize_tab = ttk.Frame(self.notebook)
+class MarketingCampaignApp:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Marketing Campaign Analysis")
+        self.master.geometry("1200x800")
 
-#         self.notebook.add(self.view_tab, text='View Data')
-#         self.notebook.add(self.create_tab, text='Create Record')
-#         self.notebook.add(self.update_tab, text='Update Record')
-#         self.notebook.add(self.delete_tab, text='Delete Record')
-#         self.notebook.add(self.visualize_tab, text='Visualize Data')
+        self.notebook = ttk.Notebook(self.master)
+        self.notebook.pack(fill=tk.BOTH, expand=True)
 
-#         self.setup_view_tab()
-#         self.setup_create_tab()
-#         self.setup_update_tab()
-#         self.setup_delete_tab()
-#         self.setup_visualize_tab()
+        self.create_crud_tab()
+        self.create_visualization_tab()
 
-#     def setup_view_tab(self):
-#         # Create Treeview
-#         self.tree = ttk.Treeview(self.view_tab)
-#         self.tree.pack(expand=True, fill='both')
+    def create_crud_tab(self):
+        crud_frame = ttk.Frame(self.notebook)
+        self.notebook.add(crud_frame, text="CRUD Operations")
 
-#         # Add a scrollbar
-#         scrollbar = ttk.Scrollbar(self.view_tab, orient="vertical", command=self.tree.yview)
-#         scrollbar.pack(side='right', fill='y')
-#         self.tree.configure(yscrollcommand=scrollbar.set)
+        # CRUD operation buttons
+        button_frame = ttk.Frame(crud_frame)
+        button_frame.pack(pady=10)
 
-#         # Load data button
-#         load_button = ttk.Button(self.view_tab, text="Load Data", command=self.load_data)
-#         load_button.pack(pady=10)
+        operations = [("Create", self.show_create_panel),
+                      ("Read", self.show_read_panel),
+                      ("Update", self.show_update_panel),
+                      ("Delete", self.show_delete_panel)]
 
-#     def load_data(self):
-#         df = Read.read()
+        for text, command in operations:
+            ttk.Button(button_frame, text=text, command=command).pack(side=tk.LEFT, padx=5)
+
+        # Frame to hold operation panels
+        self.operation_frame = ttk.Frame(crud_frame)
+        self.operation_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        # Initialize panels
+        self.create_panel()
+        self.read_panel()
+        self.update_panel()
+        self.delete_panel()
+
+        # Show Read panel by default
+        self.show_read_panel()
+
+    def create_panel(self):
+        self.create_frame = ttk.Frame(self.operation_frame)
         
-#         # Clear existing data
-#         self.tree.delete(*self.tree.get_children())
+        create_attributes = ["ID", "Year_Birth", "Education", "Marital_Status", "Income", "Dt_Customer", "Recency", "MntWines",
+                             "MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds", 
+                             "NumDealsPurchases", "NumWebPurchases", "NumCatalogPurchases", "NumStorePurchases", 
+                             "NumWebVisitsMonth", "AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", 
+                             "AcceptedCmp2", "Complain", "Response"]
+
+        self.create_entries = {}
+        for i, attr in enumerate(create_attributes):
+            ttk.Label(self.create_frame, text=attr).grid(row=i, column=0, padx=5, pady=2, sticky="e")
+            self.create_entries[attr] = ttk.Entry(self.create_frame)
+            self.create_entries[attr].grid(row=i, column=1, padx=5, pady=2, sticky="w")
+
+        ttk.Button(self.create_frame, text="Create Record", command=self.create_record).grid(row=len(create_attributes), column=0, columnspan=2, pady=10)
+
+    def read_panel(self):
+        self.read_frame = ttk.Frame(self.operation_frame)
+    
+        create_attributes = ["ID", "Year_Birth", "Education", "Marital_Status", "Income", "Dt_Customer", "Recency", "MntWines",
+                             "MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds", 
+                             "NumDealsPurchases", "NumWebPurchases", "NumCatalogPurchases", "NumStorePurchases", 
+                             "NumWebVisitsMonth", "AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", 
+                             "AcceptedCmp2", "Complain", "Response"]
+
+        # Create a frame for the treeview and scrollbars
+        tree_frame = ttk.Frame(self.read_frame)
+        tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Create the treeview
+        self.tree = ttk.Treeview(tree_frame, columns=create_attributes, show="headings", height=20)
+        for col in create_attributes:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100)
+
+        # Create vertical scrollbar
+        vsb = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=vsb.set)
+
+        # Create horizontal scrollbar
+        hsb = ttk.Scrollbar(tree_frame, orient="horizontal", command=self.tree.xview)
+        self.tree.configure(xscrollcommand=hsb.set)
+
+        # Grid layout for treeview and scrollbars
+        self.tree.grid(row=0, column=0, sticky='nsew')
+        vsb.grid(row=0, column=1, sticky='ns')
+        hsb.grid(row=1, column=0, sticky='ew')
+
+        # Configure the tree_frame grid
+        tree_frame.grid_rowconfigure(0, weight=1)
+        tree_frame.grid_columnconfigure(0, weight=1)
+
+        ttk.Button(self.read_frame, text="Refresh Data", command=self.refresh_data).pack(pady=10)
+
+    def update_panel(self):
+        self.update_frame = ttk.Frame(self.operation_frame)
         
-#         # Set up columns
-#         self.tree["columns"] = list(df.columns)
-#         for col in df.columns:
-#             self.tree.heading(col, text=col)
-#             self.tree.column(col, width=100)
+        ttk.Label(self.update_frame, text="ID to update:").grid(row=0, column=0, padx=5, pady=2, sticky="e")
+        self.update_id_entry = ttk.Entry(self.update_frame)
+        self.update_id_entry.grid(row=0, column=1, padx=5, pady=2, sticky="w")
 
-#         # Insert data
-#         for i, row in df.iterrows():
-#             self.tree.insert("", "end", values=list(row))
+        create_attributes = ["Year_Birth", "Education", "Marital_Status", "Income", "Dt_Customer", "Recency", "MntWines",
+                             "MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds", 
+                             "NumDealsPurchases", "NumWebPurchases", "NumCatalogPurchases", "NumStorePurchases", 
+                             "NumWebVisitsMonth", "AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", 
+                             "AcceptedCmp2", "Complain", "Response"]
 
-#     def setup_create_tab(self):
-#         # Create form fields
-#         fields = ['Year_Birth', 'Education', 'Marital_Status', 'Income', 'Dt_Customer', 'Recency', 'MntWines',
-#                   'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds', 
-#                   'NumDealsPurchases', 'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases', 
-#                   'NumWebVisitsMonth', 'AcceptedCmp3', 'AcceptedCmp4', 'AcceptedCmp5', 'AcceptedCmp1', 
-#                   'AcceptedCmp2', 'Complain', 'Response']
+        self.update_entries = {}
+        for i, attr in enumerate(create_attributes, start=1):
+            ttk.Label(self.update_frame, text=attr).grid(row=i, column=0, padx=5, pady=2, sticky="e")
+            self.update_entries[attr] = ttk.Entry(self.update_frame)
+            self.update_entries[attr].grid(row=i, column=1, padx=5, pady=2, sticky="w")
+
+        ttk.Button(self.update_frame, text="Update Record", command=self.update_record).grid(row=len(create_attributes)+1, column=0, columnspan=2, pady=10)
+
+    def delete_panel(self):
+        self.delete_frame = ttk.Frame(self.operation_frame)
         
-#         self.create_entries = {}
-#         for i, field in enumerate(fields):
-#             label = ttk.Label(self.create_tab, text=field)
-#             label.grid(row=i, column=0, padx=5, pady=2)
-#             entry = ttk.Entry(self.create_tab)
-#             entry.grid(row=i, column=1, padx=5, pady=2)
-#             self.create_entries[field] = entry
+        ttk.Label(self.delete_frame, text="ID to delete:").pack(pady=5)
+        self.delete_id_entry = ttk.Entry(self.delete_frame)
+        self.delete_id_entry.pack(pady=5)
 
-#         create_button = ttk.Button(self.create_tab, text="Create Record", command=self.create_record)
-#         create_button.grid(row=len(fields), column=0, columnspan=2, pady=10)
+        ttk.Button(self.delete_frame, text="Delete Record", command=self.delete_record).pack(pady=10)
 
-#     def create_record(self):
-#         # Get values from entries
-#         values = {field: entry.get() for field, entry in self.create_entries.items()}
-#         try:
-#             Create.Create(**values)
-#             messagebox.showinfo("Success", "Record created successfully!")
-#             self.load_data()  # Refresh the view
-#         except Exception as e:
-#             messagebox.showerror("Error", str(e))
+    def show_create_panel(self):
+        self.clear_operation_frame()
+        self.create_frame.pack(fill=tk.BOTH, expand=True)
 
-#     def setup_update_tab(self):
-#         ttk.Label(self.update_tab, text="Index to update:").pack(pady=5)
-#         self.update_index_entry = ttk.Entry(self.update_tab)
-#         self.update_index_entry.pack(pady=5)
+    def show_read_panel(self):
+        self.clear_operation_frame()
+        self.read_frame.pack(fill=tk.BOTH, expand=True)
+        self.refresh_data()
 
-#         ttk.Label(self.update_tab, text="New values (comma-separated):").pack(pady=5)
-#         self.update_values_entry = ttk.Entry(self.update_tab)
-#         self.update_values_entry.pack(pady=5)
+    def show_update_panel(self):
+        self.clear_operation_frame()
+        self.update_frame.pack(fill=tk.BOTH, expand=True)
 
-#         update_button = ttk.Button(self.update_tab, text="Update Record", command=self.update_record)
-#         update_button.pack(pady=10)
+    def show_delete_panel(self):
+        self.clear_operation_frame()
+        self.delete_frame.pack(fill=tk.BOTH, expand=True)
 
-#     def update_record(self):
-#         try:
-#             index = int(self.update_index_entry.get())
-#             new_values = self.update_values_entry.get().split(',')
-#             Update.update_row_by_index(index, new_values)
-#             messagebox.showinfo("Success", f"Record at index {index} updated successfully!")
-#             self.load_data()  # Refresh the view
-#         except Exception as e:
-#             messagebox.showerror("Error", str(e))
+    def clear_operation_frame(self):
+        for widget in self.operation_frame.winfo_children():
+            widget.pack_forget()
 
-#     def setup_delete_tab(self):
-#         ttk.Label(self.delete_tab, text="Index to delete:").pack(pady=5)
-#         self.delete_index_entry = ttk.Entry(self.delete_tab)
-#         self.delete_index_entry.pack(pady=5)
+    def create_visualization_tab(self):
+        viz_frame = ttk.Frame(self.notebook)
+        self.notebook.add(viz_frame, text="Data Visualization")
 
-#         delete_button = ttk.Button(self.delete_tab, text="Delete Record", command=self.delete_record)
-#         delete_button.pack(pady=10)
+        viz_functions = [
+            ("Age Distribution", DataViz.do_thi_phan_bo_do_tuoi),
+            ("Purchase Frequency", DataViz.do_thi_luot_mua_hang),
+            ("Purchase Methods", DataViz.bieu_do_phan_tich_hinh_thuc_mua_hang),
+            ("Web Visits", DataViz.do_thi_so_luot_truy_cap_web),
+            ("Customer Loyalty", DataViz.do_thi_phan_bo_thoi_gian_gan_bo),
+            ("Annual Spending", DataViz.do_thi_tong_chi_tieu_cac_nam),
+            ("Campaign Performance", DataViz.hieu_suat_chien_dich),
+            ("Offer Campaigns", DataViz.chien_dich_uu_dai),
+            ("Average Product Quantities", DataViz.so_luong_trung_binh_cua_moi_san_pham),
+            ("Income vs Expenditure", DataViz.so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien),
+            ("Complaints by Age", DataViz.bieu_do_phan_tich_muc_do_phan_nan),
+            ("Purchase Frequency by Age", DataViz.bieu_do_tan_suat_mua_hang_theo_do_tuoi)
+        ]
 
-#     def delete_record(self):
-#         try:
-#             index = int(self.delete_index_entry.get())
-#             Delete.Delete_by_index(index)
-#             self.load_data()  # Refresh the view
-#         except Exception as e:
-#             messagebox.showerror("Error", str(e))
+        for i, (text, func) in enumerate(viz_functions):
+            ttk.Button(viz_frame, text=text, command=lambda f=func: self.show_visualization(f)).grid(row=i//3, column=i%3, padx=5, pady=5, sticky="nsew")
 
-#     def setup_visualize_tab(self):
-#         visualizations = [
-#             ("Age Distribution", Data_visualization.do_thi_phan_bo_do_tuoi),
-#             ("Purchase Distribution", Data_visualization.do_thi_luot_mua_hang),
-#             ("Purchase Methods", Data_visualization.bieu_do_phan_tich_hinh_thuc_mua_hang),
-#             ("Web Visits", Data_visualization.do_thi_so_luot_truy_cap_web),
-#             ("Customer Loyalty", Data_visualization.do_thi_phan_bo_thoi_gian_gan_bo),
-#             ("Yearly Expenditure", Data_visualization.do_thi_tong_chi_tieu_cac_nam),
-#             ("Campaign Performance", Data_visualization.hieu_suat_chien_dich),
-#             ("Campaign Offers", Data_visualization.chien_dich_uu_dai),
-#             ("Average Product Quantity", Data_visualization.so_luong_trung_binh_cua_moi_san_pham),
-#             ("Income vs Expenditure", Data_visualization.so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien),
-#             ("Complaints by Age", Data_visualization.bieu_do_phan_tich_muc_do_phan_nan),
-#             ("Purchase Frequency by Age", Data_visualization.bieu_do_tan_suat_mua_hang_theo_do_tuoi)
-#         ]
+        self.canvas_frame = ttk.Frame(viz_frame)
+        self.canvas_frame.grid(row=4, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
 
-#         for i, (text, func) in enumerate(visualizations):
-#             button = ttk.Button(self.visualize_tab, text=text, command=lambda f=func: self.show_visualization(f))
-#             button.grid(row=i//3, column=i%3, padx=5, pady=5)
+    def create_record(self):
+        try:
+            values = [self.create_entries[attr].get() for attr in self.create_entries]
+            Create.Create(*values)
+            messagebox.showinfo("Success", "Record created successfully!")
+            self.refresh_data()
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
 
-#     def show_visualization(self, vis_func):
-#         # Clear previous plot
-#         for widget in self.visualize_tab.winfo_children():
-#             if isinstance(widget, FigureCanvasTkAgg):
-#                 widget.get_tk_widget().destroy()
+    def refresh_data(self):
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        df = read()
+        for index, row in df.iterrows():
+            self.tree.insert("", "end", values=list(row))
 
-#         # Create new plot
-#         fig = plt.figure(figsize=(10, 6))
-#         vis_func()
+    def update_record(self):
+        try:
+            id_to_update = int(self.update_id_entry.get())
+            new_values = [id_to_update] + [self.update_entries[attr].get() for attr in self.update_entries]
+            update_row_by_id(id_to_update, new_values)
+            messagebox.showinfo("Success", f"Record with ID {id_to_update} updated successfully!")
+            self.refresh_data()
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    def delete_record(self):
+        try:
+            id_to_delete = int(self.delete_id_entry.get())
+            Delete_by_ID(id_to_delete)
+            messagebox.showinfo("Success", f"Record with ID {id_to_delete} deleted successfully!")
+            self.refresh_data()
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
+    def show_visualization(self, viz_function):
+        plt.close('all')  # Close any existing plots
+        viz_function()  # Call the visualization function
         
-#         # Embed the plot
-#         canvas = FigureCanvasTkAgg(fig, master=self.visualize_tab)
-#         canvas.draw()
-#         canvas.get_tk_widget().grid(row=4, column=0, columnspan=3, padx=5, pady=5)
+        # Embed the plot in the tkinter window
+        for widget in self.canvas_frame.winfo_children():
+            widget.destroy()
+        
+        figure = plt.gcf()
+        canvas = FigureCanvasTkAgg(figure, master=self.canvas_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-# def main():
-#     root = tk.Tk()
-#     app = MarketingCampaignUI(root)
-#     root.mainloop()
-
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = MarketingCampaignApp(root)
+    root.mainloop()
