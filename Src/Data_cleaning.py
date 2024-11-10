@@ -19,7 +19,7 @@ def update_Marital_status(custom_df):
     # thay tất cả các giá trị còn lại thành 'Single'
 
 def delete_columm(custom_df):
-    cols_to_drop = ['ID', 'Kidhome', 'Teenhome', 'Z_CostContact', 'Z_Revenue']
+    cols_to_drop = ['Kidhome', 'Teenhome', 'Z_CostContact', 'Z_Revenue']
     existing_cols = [col for col in cols_to_drop if col in custom_df.columns]
     if existing_cols:
         custom_df = custom_df.drop(existing_cols, axis=1)
