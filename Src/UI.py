@@ -211,9 +211,17 @@ class MarketingCampaignApp:
     def delete_record(self):
         try:
             id_to_delete = int(self.delete_id_entry.get())
+            # Kiểm tra xem ID có tồn tại không trước khi xóa
+            df = read()  # Đọc dữ liệu hiện tại để kiểm tra ID
+            if id_to_delete not in df['ID'].values:
+                messagebox.showerror("Error", f"Record with ID {id_to_delete} not found.")
+                return
+            
+            # Nếu ID tồn tại, thực hiện xóa
             Delete_by_ID(id_to_delete)
             messagebox.showinfo("Success", f"Record with ID {id_to_delete} deleted successfully!")
             self.refresh_data()
+            
         except Exception as e:
             messagebox.showerror("Error", str(e))
 
