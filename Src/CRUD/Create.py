@@ -1,6 +1,7 @@
 import CRUD.Read as Read
 import pandas as pd
 import Data_cleaning as Data_cleaning
+from tkinter import messagebox
 
 def Create(ID, Year_Birth, Education, Marital_Status, Income, Dt_Customer, Recency, MntWines,
            MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, MntGoldProds, NumDealsPurchases,
@@ -58,7 +59,7 @@ def Create(ID, Year_Birth, Education, Marital_Status, Income, Dt_Customer, Recen
         # Save the updated DataFrame
         Read.save_file(df)
 
-        return df, "Record created successfully!"
+        return df, messagebox.showinfo("Thành công", "Bản ghi đã được thêm thành công!")
 
     except Exception as e:
-        return None, f"Error creating record: {str(e)}"
+        return None, messagebox.showerror("Lỗi", f"Thêm bản ghi thất bại.")

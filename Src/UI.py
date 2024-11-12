@@ -185,7 +185,7 @@ class MarketingCampaignApp:
     def create_record(self):
         try:
             values = [self.create_entries[attr].get() for attr in self.create_entries]
-            Create.Create(*values)
+            Create(*values)
             messagebox.showinfo("Success", "Record created successfully!")
             self.refresh_data()
         except Exception as e:
