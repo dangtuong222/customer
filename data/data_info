@@ -36,7 +36,7 @@
 
 - NumStorePurchases: Số lần mua hàng trực tiếp tại cửa hàng
 
-- NumWebVisitsMonth: Số lượng mua hàng được thực hiện thông qua trang web của công ty
+- NumWebVisitsMonth: Số lượng truy cập vào trang web trong tháng
 
 - AcceptedCmp3: 1 nếu khách hàng chấp nhận ưu đãi trong chiến dịch thứ 3, 0 nếu ngược lại
 
