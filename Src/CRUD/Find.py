@@ -12,6 +12,6 @@ def find_by_id(id):
     result = df[df['ID'] == id]
     
     if result.empty:
-        return None
+        return None, messagebox.showerror("Lỗi", "Không tìm thấy ID!")
     else:
         return result.iloc[0]

@@ -104,7 +104,10 @@ def bieu_do_phan_tich_hinh_thuc_mua_hang():
 
 def do_thi_so_luot_truy_cap_web():
     data_ct = Read.read()
-    
+    # Tính tổng số lần mua hàng của khách hàng
+    data_ct['Total_Purchases'] = data_ct['NumDealsPurchases' ] + data_ct['NumWebPurchases'] + data_ct['NumCatalogPurchases'] + data_ct['NumStorePurchases']
+    # Đảm bảo không có giá trị NaN trong cột Total_Purchases
+    data_ct['Total_Purchases'] = pd.to_numeric(data_ct['Total_Purchases'], errors='coerce')
     # Plotting histogram
     plt.hist(data_ct['NumWebVisitsMonth'], weights=np.ones(len(data_ct['Total_Purchases'])) / len(data_ct['Total_Purchases'])*100, bins=5, alpha=0.5, color='pink', edgecolor='darkblue')
 
@@ -210,6 +213,9 @@ def hieu_suat_chien_dich():
 
 def chien_dich_uu_dai():
     data_ct = Read.read()
+    # Tính tổng số phiếu mua hàng được chấp nhận cho mỗi khách hàng
+    data_ct['Total_Offers'] = data_ct['AcceptedCmp1'] + data_ct['AcceptedCmp2'] + data_ct['AcceptedCmp3'] + data_ct['AcceptedCmp4'] + data_ct['AcceptedCmp5']
+    
     cmp_df = data_ct[['AcceptedCmp1', 'AcceptedCmp2', 'AcceptedCmp3', 'AcceptedCmp4', 'AcceptedCmp5']]
     # Kiểm tra số lượng khách hàng
     num_customers = cmp_df.shape[0]
@@ -291,7 +297,9 @@ def so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien():
 
 def bieu_do_phan_tich_muc_do_phan_nan():
     data_ct = Read.read()
-    
+    # Tính năm hiện tại, thêm cột 'Age'
+    current_year = date.today().year
+    data_ct['Age'] = current_year - data_ct['Year_Birth']
     # Tạo nhóm độ tuổi
     bins = [0, 20, 30, 40, 50, 60, 70, 80, 100]
     #Danh sách tên gọi của các nhóm tuổi tương ứng với các ngưỡng trong bins
