@@ -54,7 +54,6 @@ def Create(ID, Year_Birth, Education, Marital_Status, Income, Dt_Customer, Recen
         Data_cleaning.update_Education(df)
         Data_cleaning.update_Marital_status(df)
         Data_cleaning.delete_columm(df)
-        Data_cleaning.updateFrame(df)
 
         # Save the updated DataFrame
         Read.save_file(df)

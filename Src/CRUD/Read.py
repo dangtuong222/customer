@@ -9,7 +9,6 @@ def read():
     Data_cleaning.update_Education(df)
     Data_cleaning.update_Marital_status(df)
     Data_cleaning.delete_columm(df)
-    Data_cleaning.updateFrame(df)
     return df
 def save_file(df):
     df.to_csv('D:/Python_project/customer/data/marketing_campaign.csv', sep=";", index=False)

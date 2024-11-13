@@ -1,3 +1,4 @@
+from datetime import date
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +9,18 @@ import Data_cleaning as Data_cleaning
 
 def do_thi_phan_bo_do_tuoi():
     data_ct = Read.read()
-    
+    # Tính năm hiện tại, thêm cột 'Age'
+    current_year = date.today().year
+    data_ct['Age'] = current_year - data_ct['Year_Birth']
+
+    # Phân nhóm cột 'Age'
+    data_ct['Age_Group'] = data_ct['Age'].apply(
+        lambda x: 
+        'Children' if x <= 16 else (
+        'Youth' if 17 <= x <= 30 else (
+        'Middle Aged' if 30 < x <=  45 else 'Old'
+        )
+    ))
     # Tính phần trăm độ tuổi
     age_range = data_ct.groupby('Age_Group').size().reset_index(name='num')
     age_range['percentage'] = (age_range['num'] * 100 / age_range['num'].sum()).round(2)
@@ -26,6 +38,10 @@ def do_thi_phan_bo_do_tuoi():
 
 def do_thi_luot_mua_hang():
     data_ct = Read.read()
+    # Tính tổng số lần mua hàng của khách hàng
+    data_ct['Total_Purchases'] = data_ct['NumDealsPurchases' ] + data_ct['NumWebPurchases'] + data_ct['NumCatalogPurchases'] + data_ct['NumStorePurchases']
+    # Đảm bảo không có giá trị NaN trong cột Total_Purchases
+    data_ct['Total_Purchases'] = pd.to_numeric(data_ct['Total_Purchases'], errors='coerce')
     # SẮP XẾP DỮ LIỆU
     sorted_data = np.sort(data_ct['Total_Purchases'])
 
@@ -108,6 +124,11 @@ def do_thi_so_luot_truy_cap_web():
 
 def do_thi_phan_bo_thoi_gian_gan_bo():
     data_ct = Read.read()
+    current_year = date.today().year
+        # Tính năm đăng ký của khách hàng
+    data_ct['Dt_Customer'] = pd.to_datetime(data_ct['Dt_Customer'], errors='coerce')
+    data_ct['Enrollment_Year'] = data_ct['Dt_Customer'].dt.year
+    data_ct['Seniority'] = current_year - data_ct['Enrollment_Year']
     # Đổi tên cột 'Seniority' thành 'Total_Years' trong DataFrame
     tham_nien = data_ct[['Seniority']].rename(columns={'Seniority': 'Tổng Năm'})
 
@@ -133,7 +154,10 @@ def do_thi_phan_bo_thoi_gian_gan_bo():
 
 def do_thi_tong_chi_tieu_cac_nam():
     data_ct = Read.read()
-    
+    # Tính tổng chi tiêu của khách hàng
+    data_ct['Total_Spent'] = data_ct['MntWines'] + data_ct['MntFruits'] + data_ct['MntMeatProducts'] + data_ct['MntFishProducts'] + data_ct['MntSweetProducts'] +data_ct['MntGoldProds']
+    data_ct['Dt_Customer'] = pd.to_datetime(data_ct['Dt_Customer'], errors='coerce')
+    data_ct['Enrollment_Year'] = data_ct['Dt_Customer'].dt.year
     # Nhóm theo 'Enrollment_Year' và tính tổng 'Total_Spent' cho mỗi nhóm
     grouped_df = data_ct.groupby('Enrollment_Year')['Total_Spent'].sum().reset_index()
 
@@ -154,6 +178,8 @@ def do_thi_tong_chi_tieu_cac_nam():
 
 def hieu_suat_chien_dich():
     data_ct = Read.read()
+    # Tính tổng số phiếu mua hàng được chấp nhận cho mỗi khách hàng
+    data_ct['Total_Offers'] = data_ct['AcceptedCmp1'] + data_ct['AcceptedCmp2'] + data_ct['AcceptedCmp3'] + data_ct['AcceptedCmp4'] + data_ct['AcceptedCmp5']
     # Đổi tên cột 'Total_Offers' thành 'Offers_Total'
     offers = data_ct[['Total_Offers']].rename(columns={'Total_Offers': 'Offers_Total'})
 
