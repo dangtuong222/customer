@@ -8,7 +8,8 @@ from CRUD.Find import find_by_id
 import Data_visualization as DataViz
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+from tkcalendar import DateEntry
+from datetime import datetime
 
 
 class MarketingCampaignApp:
@@ -16,9 +17,21 @@ class MarketingCampaignApp:
         self.master = master
         self.master.title("Marketing Campaign Analysis")
         self.master.geometry("1200x800")
+        self.master.configure(bg="#f0f0f0")  # Set background color
+
+        self.style = ttk.Style()
+        self.style.theme_use("clam")  # Use 'clam' theme for a modern look
+        self.style.configure("TFrame", background="#f0f0f0")
+        self.style.configure("TButton", background="#4a7abc", foreground="white", font=("Arial", 10, "bold"))
+        self.style.map("TButton", background=[("active", "#3a5a8c")])
+        self.style.configure("TLabel", background="#f0f0f0", font=("Arial", 10))
+        self.style.configure("TEntry", fieldbackground="white", font=("Arial", 10))
+        self.style.configure("TCombobox", fieldbackground="white", font=("Arial", 10))
+        self.style.configure("Treeview", background="white", fieldbackground="white", font=("Arial", 9))
+        self.style.configure("Treeview.Heading", font=("Arial", 10, "bold"))
 
         self.notebook = ttk.Notebook(self.master)
-        self.notebook.pack(fill=tk.BOTH, expand=True)
+        self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         self.create_crud_tab()
         self.create_visualization_tab()
@@ -27,7 +40,6 @@ class MarketingCampaignApp:
         crud_frame = ttk.Frame(self.notebook)
         self.notebook.add(crud_frame, text="CRUD Operations")
 
-        # CRUD operation buttons
         button_frame = ttk.Frame(crud_frame)
         button_frame.pack(pady=10)
 
@@ -35,24 +47,20 @@ class MarketingCampaignApp:
                       ("Read", self.show_read_panel),
                       ("Update", self.show_update_panel),
                       ("Delete", self.show_delete_panel),
-                      ("Search", self.show_Search_panel)
-                      ]
+                      ("Search", self.show_Search_panel)]
 
         for text, command in operations:
-            ttk.Button(button_frame, text=text, command=command).pack(side=tk.LEFT, padx=5)
+            ttk.Button(button_frame, text=text, command=command, style="TButton").pack(side=tk.LEFT, padx=5)
 
-        # Frame to hold operation panels
         self.operation_frame = ttk.Frame(crud_frame)
         self.operation_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        # Initialize panels
         self.create_panel()
         self.read_panel()
         self.update_panel()
         self.delete_panel()
         self.Search_panel()
 
-        # Show Read panel by default
         self.show_read_panel()
 
     def create_panel(self):
@@ -67,10 +75,19 @@ class MarketingCampaignApp:
         self.create_entries = {}
         for i, attr in enumerate(create_attributes):
             ttk.Label(self.create_frame, text=attr).grid(row=i, column=0, padx=5, pady=2, sticky="e")
-            self.create_entries[attr] = ttk.Entry(self.create_frame)
+            if attr == "Education":
+                self.create_entries[attr] = ttk.Combobox(self.create_frame, values=["Master", "Graduation", "PhD"])
+            elif attr == "Marital_Status":
+                self.create_entries[attr] = ttk.Combobox(self.create_frame, values=["In relationship", "Single"])
+            elif attr in ["AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", "AcceptedCmp2", "Complain", "Response"]:
+                self.create_entries[attr] = ttk.Combobox(self.create_frame, values=["0", "1"])
+            elif attr == "Dt_Customer":
+                self.create_entries[attr] = DateEntry(self.create_frame, width=12, background='#4a7abc', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
+            else:
+                self.create_entries[attr] = ttk.Entry(self.create_frame)
             self.create_entries[attr].grid(row=i, column=1, padx=5, pady=2, sticky="w")
 
-        ttk.Button(self.create_frame, text="Create Record", command=self.create_record).grid(row=len(create_attributes), column=0, columnspan=2, pady=10)
+        ttk.Button(self.create_frame, text="Create Record", command=self.create_record, style="TButton").grid(row=len(create_attributes), column=0, columnspan=2, pady=10)
 
     def read_panel(self):
         self.read_frame = ttk.Frame(self.operation_frame)
@@ -125,7 +142,16 @@ class MarketingCampaignApp:
         self.update_entries = {}
         for i, attr in enumerate(create_attributes, start=1):
             ttk.Label(self.update_frame, text=attr).grid(row=i, column=0, padx=5, pady=2, sticky="e")
-            self.update_entries[attr] = ttk.Entry(self.update_frame)
+            if attr == "Education":
+                self.update_entries[attr] = ttk.Combobox(self.update_frame, values=["Master", "Graduation", "PhD"])
+            elif attr == "Marital_Status":
+                self.update_entries[attr] = ttk.Combobox(self.update_frame, values=["In relationship", "Single"])
+            elif attr in ["AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", "AcceptedCmp2", "Complain", "Response"]:
+                self.update_entries[attr] = ttk.Combobox(self.update_frame, values=["0", "1"])
+            elif attr == "Dt_Customer":
+                self.update_entries[attr] = DateEntry(self.update_frame, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
+            else:
+                self.update_entries[attr] = ttk.Entry(self.update_frame)
             self.update_entries[attr].grid(row=i, column=1, padx=5, pady=2, sticky="w")
 
         ttk.Button(self.update_frame, text="Update Record", command=self.update_record).grid(row=len(create_attributes)+1, column=0, columnspan=2, pady=10)
@@ -213,6 +239,9 @@ class MarketingCampaignApp:
         viz_frame = ttk.Frame(self.notebook)
         self.notebook.add(viz_frame, text="Data Visualization")
 
+        button_frame = ttk.Frame(viz_frame)
+        button_frame.pack(side=tk.LEFT, fill=tk.Y, padx=10, pady=10)
+
         viz_functions = [
             ("Age Distribution", DataViz.do_thi_phan_bo_do_tuoi),
             ("Purchase Frequency", DataViz.do_thi_luot_mua_hang),
@@ -228,14 +257,22 @@ class MarketingCampaignApp:
             ("Purchase Frequency by Age", DataViz.bieu_do_tan_suat_mua_hang_theo_do_tuoi)
         ]
 
-        for i, (text, func) in enumerate(viz_functions):
-            ttk.Button(viz_frame, text=text, command=lambda f=func: self.show_visualization(f)).grid(row=i//3, column=i%3, padx=5, pady=5, sticky="nsew")
+        for text, func in viz_functions:
+            button = ttk.Button(button_frame, text=text, command=lambda f=func: self.show_visualization(f), style="TButton")
+            button.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
+            button.configure(width=20)
 
         self.canvas_frame = ttk.Frame(viz_frame)
-        self.canvas_frame.grid(row=4, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
+        self.canvas_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
     def create_record(self):
-        values = [self.create_entries[attr].get() for attr in self.create_entries]
+        values = []
+        for attr, entry in self.create_entries.items():
+            if attr == "Dt_Customer":
+                date_value = entry.get_date().strftime("%Y-%m-%d")
+                values.append(date_value)
+            else:
+                values.append(entry.get())
         Create(*values)
         self.refresh_data()
     
@@ -249,7 +286,13 @@ class MarketingCampaignApp:
 
     def update_record(self):
         id_to_update = int(self.update_id_entry.get())
-        new_values = [id_to_update] + [self.update_entries[attr].get() for attr in self.update_entries]
+        new_values = [id_to_update]
+        for attr, entry in self.update_entries.items():
+            if attr == "Dt_Customer":
+                date_value = entry.get_date().strftime("%Y-%m-%d")
+                new_values.append(date_value)
+            else:
+                new_values.append(entry.get())
         update_row_by_id(id_to_update, new_values)
         self.refresh_data()
 
@@ -271,18 +314,29 @@ class MarketingCampaignApp:
             self.search_tree.insert("", "end", values=list(record))
 
     def show_visualization(self, viz_function):
-        plt.close('all')  # Close any existing plots
-        viz_function()  # Call the visualization function
+        plt.close('all')
+        viz_function()
         
-        # Embed the plot in the tkinter window
         for widget in self.canvas_frame.winfo_children():
             widget.destroy()
         
         figure = plt.gcf()
         canvas = FigureCanvasTkAgg(figure, master=self.canvas_frame)
         canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        
+        # Add a subtle animation effect
+        self.animate_widget(canvas_widget)
 
+    def animate_widget(self, widget):
+        def fade_in(alpha):
+            widget.configure(style=f"Fade.TFrame")
+            self.style.configure(f"Fade.TFrame", background=f"#{int(240*alpha):02x}{int(240*alpha):02x}{int(240*alpha):02x}")
+            if alpha < 1:
+                self.master.after(20, lambda: fade_in(min(alpha + 0.1, 1)))
+        fade_in(0)
+        
 if __name__ == "__main__":
     root = tk.Tk()
     app = MarketingCampaignApp(root)
