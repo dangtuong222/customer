@@ -244,10 +244,8 @@ class MarketingCampaignApp:
 
         viz_functions = [
             ("Age Distribution", DataViz.do_thi_phan_bo_do_tuoi),
-            ("Purchase Frequency", DataViz.do_thi_luot_mua_hang),
-            ("Purchase Methods", DataViz.bieu_do_phan_tich_hinh_thuc_mua_hang),
             ("Web Visits", DataViz.do_thi_so_luot_truy_cap_web),
-            ("Customer Loyalty", DataViz.do_thi_phan_bo_thoi_gian_gan_bo),
+            # ("Customer Loyalty", DataViz.do_thi_phan_bo_thoi_gian_gan_bo),
             ("Annual Spending", DataViz.do_thi_tong_chi_tieu_cac_nam),
             ("Campaign Performance", DataViz.hieu_suat_chien_dich),
             ("Number of customers accepting the offer", DataViz.so_khach_hang_chap_nhan_uu_dai),

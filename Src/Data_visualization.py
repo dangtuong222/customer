@@ -30,79 +30,11 @@ def do_thi_phan_bo_do_tuoi():
     sizes = age_range['num']
     colors = ["#41B7C4", "#CCEDB1", "#F5CA63"]
     # Tạo biểu đồ hình tròn
-    plt.figure(figsize=(7, 5))
+    fig = plt.figure(figsize=(7, 5))
     plt.pie(sizes, labels=labels, colors=colors, autopct='%1.2f%%', startangle=140)
     plt.title('Phân bố độ tuổi')
     plt.legend(bbox_to_anchor=(1, 1), loc='upper left', borderaxespad=0)
-    plt.show()
-
- # Bỏ đồ thị này   
-# Bỏ đồ thị này 
-def do_thi_luot_mua_hang():
-    data_ct = Read.read()
-    # Tính tổng số lần mua hàng của khách hàng
-    data_ct['Total_Purchases'] = data_ct['NumDealsPurchases' ] + data_ct['NumWebPurchases'] + data_ct['NumCatalogPurchases'] + data_ct['NumStorePurchases']
-    # Đảm bảo không có giá trị NaN trong cột Total_Purchases
-    data_ct['Total_Purchases'] = pd.to_numeric(data_ct['Total_Purchases'], errors='coerce')
-    # SẮP XẾP DỮ LIỆU
-    sorted_data = np.sort(data_ct['Total_Purchases'])
-
-    # TÍNH TOÁN CDF
-    #Tạo một mảng y với các giá trị từ 1 đến số lượng phần tử trong sorted_data, 
-    #sau đó chia cho tổng số phần tử để tính tỷ lệ tích lũy. Mảng y này thể hiện tỷ lệ phần trăm dữ liệu dưới mỗi giá trị trong sorted_data.
-    y = np.arange(1, len(sorted_data) + 1) / len(sorted_data)
-
-    # TẠO ĐỒ THỊ CDF    
-    plt.figure(figsize=(8, 6))
-    plt.step(sorted_data, y, color="red", linestyle='--', linewidth=1)
-
-    # TÙY CHỈNH CỘT X,Y
-    plt.xticks(np.arange(0,50, step=5))
-    plt.yticks(np.arange(0, 1.1, 0.1))
-
-    # GẮN NHÃN
-    plt.xlabel('Tổng số mua hàng')
-    plt.ylabel('Phân phối tích lũy')
-
-    # ÁP DỤNG BG
-    plt.style.use('ggplot')
-
-    plt.show()
-# Bỏ đồ thị này
-def bieu_do_phan_tich_hinh_thuc_mua_hang():
-    data_ct = Read.read()
-    
-    # Chọn các cột chứa cả 'Num' và 'Purchases' trong tên cột
-    purchase_columns = [col for col in data_ct.columns if 'Num' in col and 'Purchases' in col]
-    purchase_df = data_ct[purchase_columns]
-
-    # Làm phẳng DataFrame thành danh sách và tạo DataFrame mới với tên phương thức mua lặp lại
-    total_purchases = purchase_df.values.flatten()
-    purchase_names = ['Deal', 'Web', 'Catalog', 'Store'] * (len(total_purchases) // 4)
-
-    # Tạo DataFrame cho Phương thức mua và Tổng lượt mua
-    combined_df = pd.DataFrame({
-        'Phương thức mua': purchase_names,
-        'Tổng lượt mua': total_purchases
-    })
-    
-    # Tạo biểu đồ boxplot
-    sns.boxplot(data=combined_df, 
-                x='Phương thức mua', 
-                y='Tổng lượt mua', 
-                hue='Phương thức mua', 
-                palette='Set2', 
-                fliersize=5, 
-                linewidth=1, 
-                legend=False)
-
-    # Định dạng thêm cho biểu đồ
-    plt.xlabel("Phương thức mua")
-    plt.ylabel("Tổng lượt mua")
-    plt.title("Biểu đồ Boxplot của Tổng lượt mua theo Phương thức mua")
-    plt.xticks(rotation=45)  # Xoay nhãn trục x nếu cần
-    plt.legend(title='Phương thức mua')  # Hiển thị chú giải nếu muốn
-    plt.show()
+    return fig
 
 def do_thi_so_luot_truy_cap_web():
     data_ct = Read.read()
@@ -111,52 +43,52 @@ def do_thi_so_luot_truy_cap_web():
     # Đảm bảo không có giá trị NaN trong cột Total_Purchases
     data_ct['Total_Purchases'] = pd.to_numeric(data_ct['Total_Purchases'], errors='coerce')
     # Plotting histogram
-    plt.hist(data_ct['NumWebVisitsMonth'], weights=np.ones(len(data_ct['Total_Purchases'])) / len(data_ct['Total_Purchases'])*100, bins=5, alpha=0.5, color='pink', edgecolor='darkblue')
+    fig = plt.hist(data_ct['NumWebVisitsMonth'], weights=np.ones(len(data_ct['Total_Purchases'])) / len(data_ct['Total_Purchases'])*100, bins=5, alpha=0.5, color='pink', edgecolor='darkblue')
 
     # Customize the y-axis
     plt.gca().yaxis.set_major_formatter(PercentFormatter())
 
     # Determine the lower value of Total_Purchases
     lower_limit = data_ct['NumWebVisitsMonth'].min()
-
+    plt.title("Số lượt truy cập Web trong tháng")
     # Set x-axis limits and ticks
     #plt.xlim(lower_limit, 20)
     plt.xticks(range(lower_limit, 21, 1))
     # Labeling
     plt.xlabel('Số Lần Truy Cập Web')
     plt.ylabel('Phần trăm')
-    plt.show()
+    return fig
 
-# Bỏ đồ thị này 
-def do_thi_phan_bo_thoi_gian_gan_bo():
-    data_ct = Read.read()
-    current_year = date.today().year
-        # Tính năm đăng ký của khách hàng
-    data_ct['Dt_Customer'] = pd.to_datetime(data_ct['Dt_Customer'], errors='coerce')
-    data_ct['Enrollment_Year'] = data_ct['Dt_Customer'].dt.year
-    data_ct['Seniority'] = current_year - data_ct['Enrollment_Year']
-    # Đổi tên cột 'Seniority' thành 'Total_Years' trong DataFrame
-    tham_nien = data_ct[['Seniority']].rename(columns={'Seniority': 'Tổng Năm'})
+# def do_thi_phan_bo_thoi_gian_gan_bo():
+#     data_ct = Read.read()
+#     current_year = date.today().year
+#     # Tính năm đăng ký của khách hàng
+#     data_ct['Dt_Customer'] = pd.to_datetime(data_ct['Dt_Customer'], errors='coerce')
+#     data_ct['Enrollment_Year'] = data_ct['Dt_Customer'].dt.year
+#     data_ct['Seniority'] = current_year - data_ct['Enrollment_Year']
+#     # Đổi tên cột 'Seniority' thành 'Total_Years' trong DataFrame
+#     tham_nien = data_ct[['Seniority']].rename(columns={'Seniority': 'Tổng Năm'})
 
-    # Nhóm theo 'Tổng Năm' và tính số lượng mỗi nhóm
-    tham_nien = tham_nien.groupby('Tổng Năm').size().reset_index(name='Số Lượng')
+#     # Nhóm theo 'Tổng Năm' và tính số lượng mỗi nhóm
+#     tham_nien = tham_nien.groupby('Tổng Năm').size().reset_index(name='Số Lượng')
 
-    # Tính phần trăm và làm tròn đến 2 chữ số thập phân
-    tham_nien['Phần Trăm'] = (tham_nien['Số Lượng'] * 100 / tham_nien['Số Lượng'].sum()).round(2)
+#     # Tính phần trăm và làm tròn đến 2 chữ số thập phân
+#     tham_nien['Phần Trăm'] = (tham_nien['Số Lượng'] * 100 / tham_nien['Số Lượng'].sum()).round(2)
 
-    # Chuyển đổi 'Tổng Năm' thành biến phân loại (categorical)
-    tham_nien['Tổng Năm'] = tham_nien['Tổng Năm'].astype('category')
+#     # Chuyển đổi 'Tổng Năm' thành biến phân loại (categorical)
+#     tham_nien['Tổng Năm'] = tham_nien['Tổng Năm'].astype('category')
+    
+#     # Data
+#     labels = tham_nien['Tổng Năm']
+#     sizes = tham_nien['Phần Trăm']
+#     colors = ["#41B7C4", "#CCEDB1", "#F5CA63", "#808A87"]
 
-    # Data
-    labels = tham_nien['Tổng Năm']
-    sizes = tham_nien['Phần Trăm']
-    colors = ["#41B7C4", "#CCEDB1", "#F5CA63", "#808A87"]
+#     # Create a pie chart
+#     fig = plt.pie(sizes, labels=labels, colors=colors, autopct='%1.2f%%', startangle=140)
+#     plt.title('Phân bố thời gian gắn bó')
+#     plt.legend(bbox_to_anchor=(1, 1), loc='upper left', borderaxespad=0)
+#     return fig
 
-    # Create a pie chart
-    plt.pie(sizes, labels=labels, colors=colors, autopct='%1.2f%%', startangle=140)
-    plt.title('Phân bổ thời gian gắn bó')
-    plt.legend(bbox_to_anchor=(1, 1), loc='upper left', borderaxespad=0)
-    plt.show()
 def do_thi_tong_chi_tieu_cac_nam():
     data_ct = Read.read()
     # Tính tổng chi tiêu của khách hàng
@@ -176,10 +108,11 @@ def do_thi_tong_chi_tieu_cac_nam():
     sizes = grouped_df['Phần Trăm']
     colors = ["#41B7C4", "#CCEDB1", "#F5CA63", "#808A87"]
     
-    plt.pie(sizes, labels=labels, colors=colors, autopct='%1.2f%%', startangle=140)
-    plt.title('Phân bố chi tiêu các năm của khách hàng')
+    fig = plt.pie(sizes, labels=labels, colors=colors, autopct='%1.2f%%', startangle=140)
+    plt.title('Phân bố chi tiêu các năm')
     plt.legend(bbox_to_anchor=(1, 1), loc='upper left', borderaxespad=0)
-    plt.show()
+    return fig
+
 def hieu_suat_chien_dich():
     data_ct = Read.read()
     # Tính tổng số phiếu mua hàng được chấp nhận cho mỗi khách hàng
@@ -199,7 +132,7 @@ def hieu_suat_chien_dich():
     
     sns.set(style="whitegrid")  # Thiết lập phong cách đồ thị là lưới trắng
     # Tạo biểu đồ cột sử dụng seaborn
-    sns.barplot(x='Offers_Total', y='num', data=offers, palette="Set2")
+    fig = sns.barplot(x='Offers_Total', y='num', data=offers, palette="Set2")
 
     # Thêm nhãn văn bản với phần trăm
     for index, row in offers.iterrows():
@@ -210,7 +143,8 @@ def hieu_suat_chien_dich():
     plt.ylabel('Số lượng')
     plt.title("Hiệu suất chiến dịch")
     # Hiển thị biểu đồ
-    plt.show()
+    return fig
+
 def so_khach_hang_chap_nhan_uu_dai():
     data_ct = Read.read()
     # Tính tổng số phiếu mua hàng được chấp nhận cho mỗi khách hàng
@@ -237,7 +171,7 @@ def so_khach_hang_chap_nhan_uu_dai():
     sns.set(style="whitegrid")
 
     # Tạo biểu đồ thanh sử dụng seaborn
-    sns.barplot(x='Chiến dịch', y='Số Lượng', data=df_nhom)
+    fig = sns.barplot(x='Chiến dịch', y='Số Lượng', data=df_nhom)
 
     # Thêm nhãn văn bản với phần trăm
     for index, row in df_nhom.iterrows():
@@ -247,7 +181,8 @@ def so_khach_hang_chap_nhan_uu_dai():
     plt.xlabel('Chiến dịch')
     plt.ylabel('Số Lượng')
     # Hiển thị biểu đồ
-    plt.show()
+    return fig
+
 def so_luong_trung_binh_cua_moi_san_pham():
     data_ct = Read.read()
     # Chọn các cột sản phẩm liên quan
@@ -256,7 +191,7 @@ def so_luong_trung_binh_cua_moi_san_pham():
     average_quantities = data_ct[product_columns].mean()
 
     # Thiết lập kích thước và vẽ biểu đồ
-    plt.figure(figsize=(10, 6))
+    fig = plt.figure(figsize=(10, 6))
     average_quantities.plot(kind='bar', color='skyblue', edgecolor='black')
     plt.title("Số Lượng Trung Bình của Mỗi Loại Sản Phẩm")
     plt.xlabel("Loại sản phẩm")
@@ -264,7 +199,8 @@ def so_luong_trung_binh_cua_moi_san_pham():
     # điều chỉnh độ nghiêng để các mục ko bị chồng tên 
     plt.xticks(rotation=45)
     plt.tight_layout()  # Tự động điều chỉnh bố cục để biểu đồ không bị cắt
-    plt.show()
+    return fig
+
 def so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien():
     data_ct = Read.read()
     # Chọn các cột sản phẩm liên quan
@@ -283,7 +219,7 @@ def so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien():
     sample_data = data_ct.head(50)
 
     # Vẽ biểu đồ đường so sánh thu nhập và chi tiêu
-    plt.figure(figsize=(14, 8))
+    fig = plt.figure(figsize=(14, 8))
 
     # Vẽ đường cho thu nhập
     plt.plot(sample_data.index, sample_data['Income'], label='Tổng thu nhập', color='blue', marker='o', linestyle='-', linewidth=2)
@@ -295,15 +231,12 @@ def so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien():
     plt.title('So sánh Tổng Thu Nhập và Tổng Chi Tiêu (50 Khách Hàng Đầu Tiên)', fontsize=16)
     plt.xlabel('Chỉ Số Khách Hàng', fontsize=14)
     plt.ylabel('Giá trị (dvtt)', fontsize=14)
-
     # Hiển thị legend
     plt.legend()
-
     # Đảm bảo các thành phần không bị chồng chéo
     plt.tight_layout()
+    return fig
 
-    # Hiển thị biểu đồ
-    plt.show()
 def bieu_do_phan_tich_muc_do_phan_nan():
     data_ct = Read.read()
     # Tính năm hiện tại, thêm cột 'Age'
@@ -325,7 +258,7 @@ def bieu_do_phan_tich_muc_do_phan_nan():
     # kind = 'bar' xác định đây là biểu đồ cột
     # stack = true để tạo biểu đồ cột chồng 
     # color để tạo màu cho 2 cột
-    grouped_data.plot(kind='bar', stacked=True, color=['lightblue', 'salmon'])
+    fig = grouped_data.plot(kind='bar', stacked=True, color=['lightblue', 'salmon'])
     # đặt tiêu đề cho biểu đồ 
     plt.title('Số lượng phàn nàn theo nhóm tuổi')
     # đặt nhãn lần lươt cho trục x và y
@@ -335,8 +268,8 @@ def bieu_do_phan_tich_muc_do_phan_nan():
     plt.xticks(rotation=0)
     # đặt chú giải cho biểu đồ 
     plt.legend(['Không phàn nàn', 'Có phàn nàn'])
-    # hàm show để hiện biểu đồ
-    plt.show()
+    return fig
+
 def bieu_do_tan_suat_mua_hang_theo_do_tuoi():
     # Tạo biến data_ct để đọc dữ liệu từ dữ liệu đã làm sạch trong phần crud dưới dạng dataFrame 
     data_ct = Read.read()
@@ -361,7 +294,8 @@ def bieu_do_tan_suat_mua_hang_theo_do_tuoi():
 
     # Vẽ biểu đồ cột
     # các tham số đầu vào lần lượt như kind để thiết lập loại biểu đồ, stacked để cho biết đây là biểu đồ cột chồng, figsize thể hiện kích thước, edgecolor thể hiện viền của cột
-    tan_suat_tuoi.plot(kind='bar', stacked=True, figsize=(12, 7), edgecolor='black')
+    fig = tan_suat_tuoi.plot(kind='bar', stacked=True, figsize=(12, 7), edgecolor='black')
+
     plt.xlabel("Nhóm Tuổi")
     plt.ylabel("Tần Suất Mua Hàng")
     #đặt giới hạn cho cột y
@@ -369,4 +303,4 @@ def bieu_do_tan_suat_mua_hang_theo_do_tuoi():
     plt.title("Tần Suất Mua Hàng Qua Các Kênh Theo Nhóm Tuổi")
     plt.legend(["Deals", "Web", "Catalog", "Store"], title="Kênh Mua Hàng")
     plt.xticks(rotation=30)#xoay nhãn trục x 30 độ 
-    plt.show()
+    return fig
