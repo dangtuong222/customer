@@ -250,7 +250,7 @@ class MarketingCampaignApp:
             ("Customer Loyalty", DataViz.do_thi_phan_bo_thoi_gian_gan_bo),
             ("Annual Spending", DataViz.do_thi_tong_chi_tieu_cac_nam),
             ("Campaign Performance", DataViz.hieu_suat_chien_dich),
-            ("Offer Campaigns", DataViz.chien_dich_uu_dai),
+            ("Number of customers accepting the offer", DataViz.so_khach_hang_chap_nhan_uu_dai),
             ("Average Product Quantities", DataViz.so_luong_trung_binh_cua_moi_san_pham),
             ("Income vs Expenditure", DataViz.so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien),
             ("Complaints by Age", DataViz.bieu_do_phan_tich_muc_do_phan_nan),
