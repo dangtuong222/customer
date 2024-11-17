@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import PhotoImage
 from CRUD.Create import Create
 from CRUD.Read import read
 from CRUD.Delete import Delete_by_ID
@@ -10,9 +11,9 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkcalendar import DateEntry
 from datetime import datetime
-
-
+from PIL import Image, ImageTk, ImageEnhance, ImageFilter
 class MarketingCampaignApp:
+
     def __init__(self, master):
         self.master = master
         self.master.title("Marketing Campaign Analysis")
@@ -35,22 +36,32 @@ class MarketingCampaignApp:
 
         self.create_crud_tab()
         self.create_visualization_tab()
-
+        
     def create_crud_tab(self):
         crud_frame = ttk.Frame(self.notebook)
         self.notebook.add(crud_frame, text="CRUD Operations")
 
         button_frame = ttk.Frame(crud_frame)
         button_frame.pack(pady=10)
+        try:
+            logo_image = Image.open(r"D:\Python_project\customer\Src\logo.png") 
+            logo_image = logo_image.resize((50, 50)) 
+            logo = ImageTk.PhotoImage(logo_image)
+            logo_label = ttk.Label(button_frame, image=logo)
+            logo_label.image = logo 
+            logo_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        except FileNotFoundError:
+            print("Logo image not found. Please check the path.")
 
+        # Add buttons next to the logo
         operations = [("Create", self.show_create_panel),
-                      ("Read", self.show_read_panel),
-                      ("Update", self.show_update_panel),
-                      ("Delete", self.show_delete_panel),
-                      ("Search", self.show_Search_panel)]
+                    ("Read", self.show_read_panel),
+                    ("Update", self.show_update_panel),
+                    ("Delete", self.show_delete_panel),
+                    ("Search", self.show_Search_panel)]
 
-        for text, command in operations:
-            ttk.Button(button_frame, text=text, command=command, style="TButton").pack(side=tk.LEFT, padx=5)
+        for i, (text, command) in enumerate(operations):
+            ttk.Button(button_frame, text=text, command=command, style="TButton").grid(row=0, column=i + 1, padx=5)
 
         self.operation_frame = ttk.Frame(crud_frame)
         self.operation_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
@@ -60,35 +71,60 @@ class MarketingCampaignApp:
         self.update_panel()
         self.delete_panel()
         self.Search_panel()
-
         self.show_read_panel()
 
     def create_panel(self):
         self.create_frame = ttk.Frame(self.operation_frame)
-        
+    
+        # Create a container frame for the split layout
+        container = ttk.Frame(self.create_frame)
+        container.pack(fill=tk.BOTH, expand=True)
+    
+        # Left side - Form
+        form_frame = ttk.Frame(container)
+        form_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10)
+
         create_attributes = ["ID", "Year_Birth", "Education", "Marital_Status", "Income", "Dt_Customer", "Recency", "MntWines",
-                             "MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds", 
-                             "NumDealsPurchases", "NumWebPurchases", "NumCatalogPurchases", "NumStorePurchases", 
-                             "NumWebVisitsMonth", "AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", 
-                             "AcceptedCmp2", "Complain", "Response"]
+                           "MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds", 
+                           "NumDealsPurchases", "NumWebPurchases", "NumCatalogPurchases", "NumStorePurchases", 
+                           "NumWebVisitsMonth", "AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", 
+                           "AcceptedCmp2", "Complain", "Response"]
 
         self.create_entries = {}
         for i, attr in enumerate(create_attributes):
-            ttk.Label(self.create_frame, text=attr).grid(row=i, column=0, padx=5, pady=2, sticky="e")
+            ttk.Label(form_frame, text=attr).grid(row=i+1, column=0, padx=5, pady=2, sticky="e")
             if attr == "Education":
-                self.create_entries[attr] = ttk.Combobox(self.create_frame, values=["Master", "Graduation", "PhD"])
+                self.create_entries[attr] = ttk.Combobox(form_frame, values=["Master", "Graduation", "PhD"])
             elif attr == "Marital_Status":
-                self.create_entries[attr] = ttk.Combobox(self.create_frame, values=["In relationship", "Single"])
+                self.create_entries[attr] = ttk.Combobox(form_frame, values=["In relationship", "Single"])
             elif attr in ["AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", "AcceptedCmp2", "Complain", "Response"]:
-                self.create_entries[attr] = ttk.Combobox(self.create_frame, values=["0", "1"])
+                self.create_entries[attr] = ttk.Combobox(form_frame, values=["0", "1"])
             elif attr == "Dt_Customer":
-                self.create_entries[attr] = DateEntry(self.create_frame, width=12, background='#4a7abc', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
+                self.create_entries[attr] = DateEntry(form_frame, width=12, background='#4a7abc', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
             else:
-                self.create_entries[attr] = ttk.Entry(self.create_frame)
-            self.create_entries[attr].grid(row=i, column=1, padx=5, pady=2, sticky="w")
+                self.create_entries[attr] = ttk.Entry(form_frame)
+            self.create_entries[attr].grid(row=i+1, column=1, padx=5, pady=2, sticky="w")
 
-        ttk.Button(self.create_frame, text="Create Record", command=self.create_record, style="TButton").grid(row=len(create_attributes), column=0, columnspan=2, pady=10)
+        ttk.Button(form_frame, text="Create Record", command=self.create_record, style="TButton").grid(row=len(create_attributes)+1, column=0, columnspan=2, pady=10)
 
+        # Right side - Preview/Summary
+        preview_frame = ttk.Frame(container)
+        preview_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10)
+        try:
+            logo_image = Image.open(r"D:\Python_project\customer\Src\LOGOHCMUTE.png")
+            logo_image = logo_image.resize((550, 550))
+            # blurred_image = logo_image.filter(ImageFilter.GaussianBlur(radius=1.5))
+            # enhancer = ImageEnhance.Brightness(blurred_image)
+            # faded_image = enhancer.enhance(1.1)
+            # # Làm sắc nét hình ảnh
+            logof_image = logo_image.filter(ImageFilter.SHARPEN)
+            logo = ImageTk.PhotoImage(logof_image)
+            logo_label = ttk.Label(preview_frame, image=logo)
+            logo_label.image = logo
+            logo_label.grid(row=0, column=0, columnspan=2, pady=10)
+        except FileNotFoundError:
+            print("Logo image not found. Please check the path.")
+    
     def read_panel(self):
         self.read_frame = ttk.Frame(self.operation_frame)
     
@@ -129,8 +165,14 @@ class MarketingCampaignApp:
 
     def update_panel(self):
         self.update_frame = ttk.Frame(self.operation_frame)
-        ttk.Label(self.update_frame, text="ID to update:").grid(row=0, column=0, padx=5, pady=2, sticky="e")
-        self.update_id_entry = ttk.Entry(self.update_frame)
+        container = ttk.Frame(self.update_frame)
+        container.pack(fill=tk.BOTH, expand=True)
+        
+        form_frame = ttk.Frame(container)
+        form_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10)
+        
+        ttk.Label(form_frame, text="ID to update:").grid(row=0, column=0, padx=5, pady=2, sticky="e")
+        self.update_id_entry = ttk.Entry(form_frame)
         self.update_id_entry.grid(row=0, column=1, padx=5, pady=2, sticky="w")
 
         create_attributes = ["Year_Birth", "Education", "Marital_Status", "Income", "Dt_Customer", "Recency", "MntWines",
@@ -141,21 +183,40 @@ class MarketingCampaignApp:
 
         self.update_entries = {}
         for i, attr in enumerate(create_attributes, start=1):
-            ttk.Label(self.update_frame, text=attr).grid(row=i, column=0, padx=5, pady=2, sticky="e")
+            ttk.Label(form_frame, text=attr).grid(row=i, column=0, padx=5, pady=2, sticky="e")
             if attr == "Education":
-                self.update_entries[attr] = ttk.Combobox(self.update_frame, values=["Master", "Graduation", "PhD"])
+                self.update_entries[attr] = ttk.Combobox(form_frame, values=["Master", "Graduation", "PhD"])
             elif attr == "Marital_Status":
-                self.update_entries[attr] = ttk.Combobox(self.update_frame, values=["In relationship", "Single"])
+                self.update_entries[attr] = ttk.Combobox(form_frame, values=["In relationship", "Single"])
             elif attr in ["AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", "AcceptedCmp2", "Complain", "Response"]:
-                self.update_entries[attr] = ttk.Combobox(self.update_frame, values=["0", "1"])
+                self.update_entries[attr] = ttk.Combobox(form_frame, values=["0", "1"])
             elif attr == "Dt_Customer":
-                self.update_entries[attr] = DateEntry(self.update_frame, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
+                self.update_entries[attr] = DateEntry(form_frame, width=12, background='darkblue', foreground='white', borderwidth=2, date_pattern='yyyy-mm-dd')
             else:
-                self.update_entries[attr] = ttk.Entry(self.update_frame)
+                self.update_entries[attr] = ttk.Entry(form_frame)
             self.update_entries[attr].grid(row=i, column=1, padx=5, pady=2, sticky="w")
 
-        ttk.Button(self.update_frame, text="Update Record", command=self.update_record).grid(row=len(create_attributes)+1, column=0, columnspan=2, pady=10)
-
+        ttk.Button(form_frame, text="Update Record", command=self.update_record).grid(row=len(create_attributes)+1, column=0, columnspan=2, pady=10)
+        
+        # Right side - Preview/Summary
+        preview_frame = ttk.Frame(container)
+        preview_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10)
+        
+        try:
+            logo_image = Image.open(r"D:\Python_project\customer\Src\LOGOHCMUTE.png")
+            logo_image = logo_image.resize((550, 550))
+            # blurred_image = logo_image.filter(ImageFilter.GaussianBlur(radius=1.5))
+            # enhancer = ImageEnhance.Brightness(blurred_image)
+            # faded_image = enhancer.enhance(1.1)
+            # # Làm sắc nét hình ảnh
+            logof_image = logo_image.filter(ImageFilter.SHARPEN)
+            logo = ImageTk.PhotoImage(logof_image)
+            logo_label = ttk.Label(preview_frame, image=logo)
+            logo_label.image = logo
+            logo_label.grid(row=0, column=0, columnspan=2, pady=10)
+        except FileNotFoundError:
+            print("Logo image not found. Please check the path.")
+            
     def delete_panel(self):
         self.delete_frame = ttk.Frame(self.operation_frame)
         
@@ -274,7 +335,6 @@ class MarketingCampaignApp:
         Create(*values)
         self.refresh_data()
     
-
     def refresh_data(self):
         for item in self.tree.get_children():
             self.tree.delete(item)
