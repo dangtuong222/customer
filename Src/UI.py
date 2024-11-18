@@ -44,7 +44,7 @@ class MarketingCampaignApp:
         button_frame = ttk.Frame(crud_frame)
         button_frame.pack(pady=10)
         try:
-            logo_image = Image.open(r"D:\python\customer\Logo\logo.png") 
+            logo_image = Image.open(r"D:\python\PROJECT\Logo\logo.png") 
             logo_image = logo_image.resize((50, 50)) 
             logo = ImageTk.PhotoImage(logo_image)
             logo_label = ttk.Label(button_frame, image=logo)
@@ -111,7 +111,7 @@ class MarketingCampaignApp:
         preview_frame = ttk.Frame(container)
         preview_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10)
         try:
-            logo_image = Image.open(r"D:\python\customer\Logo\logo.png")
+            logo_image = Image.open(r"D:\python\PROJECT\Logo\LOGOHCMUTE.png")
             logo_image = logo_image.resize((550, 550))
             # blurred_image = logo_image.filter(ImageFilter.GaussianBlur(radius=1.5))
             # enhancer = ImageEnhance.Brightness(blurred_image)
@@ -203,7 +203,7 @@ class MarketingCampaignApp:
         preview_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10)
         
         try:
-            logo_image = Image.open(r"D:\python\customer\Logo\LOGOHCMUTE.png")
+            logo_image = Image.open(r"D:\python\PROJECT\Logo\LOGOHCMUTE.png")
             logo_image = logo_image.resize((550, 550))
             # blurred_image = logo_image.filter(ImageFilter.GaussianBlur(radius=1.5))
             # enhancer = ImageEnhance.Brightness(blurred_image)
