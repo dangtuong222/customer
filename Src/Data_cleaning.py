@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import date
+import numpy as np
 
 def remove_null(custom_df):
     custom_df.replace("", pd.NA, inplace=True)
@@ -23,4 +23,4 @@ def delete_columm(custom_df):
     existing_cols = [col for col in cols_to_drop if col in custom_df.columns]
     if existing_cols:
         custom_df = custom_df.drop(existing_cols, axis=1)
-
+    return custom_df

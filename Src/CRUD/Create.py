@@ -7,11 +7,15 @@ def Create(ID, Year_Birth, Education, Marital_Status, Income, Dt_Customer, Recen
            MntFruits, MntMeatProducts, MntFishProducts, MntSweetProducts, MntGoldProds, NumDealsPurchases,
            NumWebPurchases, NumCatalogPurchases, NumStorePurchases, NumWebVisitsMonth, AcceptedCmp3,
            AcceptedCmp4, AcceptedCmp5, AcceptedCmp1, AcceptedCmp2, Complain, Response):
+    # Đọc dữ liệu từ hàm Read.read()
+    df = Read.read()
     try:
-        # Read the existing DataFrame
-        df = Read.read()
+        # Kiểm tra cột 'ID' có tồn tại hay không
+        if 'ID' not in df.columns:
+            messagebox.showerror("Lỗi", "Cột 'ID' không tồn tại trong DataFrame.")
+            return None
 
-        # Create the new row as a dictionary
+        # Tạo bản ghi mới dưới dạng dictionary
         new_row = {
             "ID": ID,
             "Year_Birth": Year_Birth,
@@ -39,26 +43,36 @@ def Create(ID, Year_Birth, Education, Marital_Status, Income, Dt_Customer, Recen
             "Complain": Complain,
             "Response": Response
         }
+        # Đồng nhất kiểu dữ liệu của cột 'ID' và giá trị ID
+        df['ID'] = df['ID'].astype(str)
+        ID = str(ID)
 
-        # Create a new DataFrame with the new row
+        # Kiểm tra xem ID đã tồn tại hay chưa
+        if ID in df['ID'].values:
+            messagebox.showerror("Lỗi", "ID đã tồn tại.")
+            return None
+            
+        # Tạo DataFrame mới từ bản ghi mới
         new_record_df = pd.DataFrame([new_row])
 
-        # Ensure that the new record has the same columns as the existing DataFrame
+        # Đảm bảo cột của bản ghi mới phù hợp với DataFrame hiện tại
         new_record_df = new_record_df.reindex(columns=df.columns)
 
-        # Concatenate the new record with the existing DataFrame
+        # Gộp bản ghi mới vào DataFrame hiện tại
         df = pd.concat([df, new_record_df], ignore_index=True)
 
-        # Apply data cleaning operations
+        # Áp dụng các bước làm sạch dữ liệu
         Data_cleaning.remove_null(df)
         Data_cleaning.update_Education(df)
         Data_cleaning.update_Marital_status(df)
-        Data_cleaning.delete_columm(df)
+        df = Data_cleaning.delete_columm(df)
 
-        # Save the updated DataFrame
+        # Lưu DataFrame đã cập nhật
         Read.save_file(df)
-
-        return df, messagebox.showinfo("Thành công", "Bản ghi đã được thêm thành công!")
-
+        messagebox.showinfo("Thành công", "Bản ghi đã được thêm thành công!")
+        return df
+            
     except Exception as e:
-        return None, messagebox.showerror("Lỗi", f"Thêm bản ghi thất bại.")
+        # Hiển thị lỗi nếu có lỗi xảy ra
+        messagebox.showerror("Lỗi", e)
+        return None
