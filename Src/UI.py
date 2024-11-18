@@ -18,10 +18,10 @@ class MarketingCampaignApp:
         self.master = master
         self.master.title("Marketing Campaign Analysis")
         self.master.geometry("1200x800")
-        self.master.configure(bg="#f0f0f0")  # Set background color
+        self.master.configure(bg="#f0f0f0")  
 
         self.style = ttk.Style()
-        self.style.theme_use("clam")  # Use 'clam' theme for a modern look
+        self.style.theme_use("clam")  
         self.style.configure("TFrame", background="#f0f0f0")
         self.style.configure("TButton", background="#4a7abc", foreground="white", font=("Arial", 10, "bold"))
         self.style.map("TButton", background=[("active", "#3a5a8c")])
@@ -30,20 +30,22 @@ class MarketingCampaignApp:
         self.style.configure("TCombobox", fieldbackground="white", font=("Arial", 10))
         self.style.configure("Treeview", background="white", fieldbackground="white", font=("Arial", 9))
         self.style.configure("Treeview.Heading", font=("Arial", 10, "bold"))
-
+        # Tạo Notebook để chứa các tab
         self.notebook = ttk.Notebook(self.master)
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-
+        # Tạo các tab khác nhau trong ứng dụng
         self.create_crud_tab()
         self.create_visualization_tab()
         
     def create_crud_tab(self):
+        # Tab CRUD Operations
         crud_frame = ttk.Frame(self.notebook)
         self.notebook.add(crud_frame, text="CRUD Operations")
-
+        
         button_frame = ttk.Frame(crud_frame)
         button_frame.pack(pady=10)
         try:
+            # Thay đổi lại đường dẫn hình ảnh cho phù hợp với thiết bị
             logo_image = Image.open(r"D:\python\PROJECT\Logo\logo.png") 
             logo_image = logo_image.resize((50, 50)) 
             logo = ImageTk.PhotoImage(logo_image)
@@ -53,7 +55,7 @@ class MarketingCampaignApp:
         except FileNotFoundError:
             print("Logo image not found. Please check the path.")
 
-        # Add buttons next to the logo
+        # Thêm các nút chức năng bên cạnh logo
         operations = [("Create", self.show_create_panel),
                     ("Read", self.show_read_panel),
                     ("Update", self.show_update_panel),
@@ -63,9 +65,10 @@ class MarketingCampaignApp:
         for i, (text, command) in enumerate(operations):
             ttk.Button(button_frame, text=text, command=command, style="TButton").grid(row=0, column=i + 1, padx=5)
 
+        # Frame để chứa các thao tác CRUD
         self.operation_frame = ttk.Frame(crud_frame)
         self.operation_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-
+        # Tạo các bảng giao diện CRUD
         self.create_panel()
         self.read_panel()
         self.update_panel()
@@ -74,16 +77,17 @@ class MarketingCampaignApp:
         self.show_read_panel()
 
     def create_panel(self):
+        # Tạo giao diện cho Create Panel
         self.create_frame = ttk.Frame(self.operation_frame)
     
-        # Create a container frame for the split layout
+        # Tạo một khung chứa để bố cục chia đôi.
         container = ttk.Frame(self.create_frame)
         container.pack(fill=tk.BOTH, expand=True)
     
-        # Left side - Form
+        # Phần bên trái - Form nhập liệu
         form_frame = ttk.Frame(container)
         form_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10)
-
+        # Các thuộc tính cần nhập
         create_attributes = ["ID", "Year_Birth", "Education", "Marital_Status", "Income", "Dt_Customer", "Recency", "MntWines",
                            "MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds", 
                            "NumDealsPurchases", "NumWebPurchases", "NumCatalogPurchases", "NumStorePurchases", 
@@ -107,16 +111,13 @@ class MarketingCampaignApp:
 
         ttk.Button(form_frame, text="Create Record", command=self.create_record, style="TButton").grid(row=len(create_attributes)+1, column=0, columnspan=2, pady=10)
 
-        # Right side - Preview/Summary
+        # Phần bên phải - Hình ảnh/Preview
         preview_frame = ttk.Frame(container)
         preview_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10)
         try:
             logo_image = Image.open(r"D:\python\PROJECT\Logo\LOGOHCMUTE.png")
             logo_image = logo_image.resize((550, 550))
-            # blurred_image = logo_image.filter(ImageFilter.GaussianBlur(radius=1.5))
-            # enhancer = ImageEnhance.Brightness(blurred_image)
-            # faded_image = enhancer.enhance(1.1)
-            # # Làm sắc nét hình ảnh
+            # Làm sắc nét hình ảnh
             logof_image = logo_image.filter(ImageFilter.SHARPEN)
             logo = ImageTk.PhotoImage(logof_image)
             logo_label = ttk.Label(preview_frame, image=logo)
@@ -134,30 +135,30 @@ class MarketingCampaignApp:
                              "NumWebVisitsMonth", "AcceptedCmp3", "AcceptedCmp4", "AcceptedCmp5", "AcceptedCmp1", 
                              "AcceptedCmp2", "Complain", "Response"]
 
-        # Create a frame for the treeview and scrollbars
+        # Tạo giao diện cho Read Panel
         tree_frame = ttk.Frame(self.read_frame)
         tree_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Create the treeview
+        # Tạo chế độ xem dạng cây
         self.tree = ttk.Treeview(tree_frame, columns=create_attributes, show="headings", height=20)
         for col in create_attributes:
             self.tree.heading(col, text=col)
             self.tree.column(col, width=100)
 
-        # Create vertical scrollbar
+        # Tạo thanh cuộn dọc
         vsb = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=vsb.set)
 
-        # Create horizontal scrollbar
+        # Tạo thanh cuộn ngang
         hsb = ttk.Scrollbar(tree_frame, orient="horizontal", command=self.tree.xview)
         self.tree.configure(xscrollcommand=hsb.set)
 
-        # Grid layout for treeview and scrollbars
+        # Bố cục lưới cho chế độ xem dạng cây và thanh cuộn
         self.tree.grid(row=0, column=0, sticky='nsew')
         vsb.grid(row=0, column=1, sticky='ns')
         hsb.grid(row=1, column=0, sticky='ew')
 
-        # Configure the tree_frame grid
+        # Định cấu hình lưới tree_frame
         tree_frame.grid_rowconfigure(0, weight=1)
         tree_frame.grid_columnconfigure(0, weight=1)
 
@@ -198,16 +199,12 @@ class MarketingCampaignApp:
 
         ttk.Button(form_frame, text="Update Record", command=self.update_record).grid(row=len(create_attributes)+1, column=0, columnspan=2, pady=10)
         
-        # Right side - Preview/Summary
         preview_frame = ttk.Frame(container)
         preview_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=10)
         
         try:
             logo_image = Image.open(r"D:\python\PROJECT\Logo\LOGOHCMUTE.png")
             logo_image = logo_image.resize((550, 550))
-            # blurred_image = logo_image.filter(ImageFilter.GaussianBlur(radius=1.5))
-            # enhancer = ImageEnhance.Brightness(blurred_image)
-            # faded_image = enhancer.enhance(1.1)
             # # Làm sắc nét hình ảnh
             logof_image = logo_image.filter(ImageFilter.SHARPEN)
             logo = ImageTk.PhotoImage(logof_image)
@@ -238,11 +235,9 @@ class MarketingCampaignApp:
 
         ttk.Button(search_input_frame, text="Search Record", command=self.Search_record).pack(side=tk.LEFT, padx=5)
 
-        # Create a frame for the treeview and scrollbars
         tree_frame = ttk.Frame(self.Search_frame)
         tree_frame.pack(fill=tk.BOTH, expand=True, pady=10)
 
-        # Create the treeview
         columns = ["ID", "Year_Birth", "Education", "Marital_Status", "Income", "Dt_Customer", "Recency", "MntWines",
                    "MntFruits", "MntMeatProducts", "MntFishProducts", "MntSweetProducts", "MntGoldProds", 
                    "NumDealsPurchases", "NumWebPurchases", "NumCatalogPurchases", "NumStorePurchases", 
@@ -254,20 +249,16 @@ class MarketingCampaignApp:
             self.search_tree.heading(col, text=col)
             self.search_tree.column(col, width=100)
 
-        # Create vertical scrollbar
+        # Tạp thanh cuộn dọc và ngang
         vsb = ttk.Scrollbar(tree_frame, orient="vertical", command=self.search_tree.yview)
         self.search_tree.configure(yscrollcommand=vsb.set)
-
-        # Create horizontal scrollbar
         hsb = ttk.Scrollbar(tree_frame, orient="horizontal", command=self.search_tree.xview)
         self.search_tree.configure(xscrollcommand=hsb.set)
 
-        # Grid layout for treeview and scrollbars
         self.search_tree.grid(row=0, column=0, sticky='nsew')
         vsb.grid(row=0, column=1, sticky='ns')
         hsb.grid(row=1, column=0, sticky='ew')
 
-        # Configure the tree_frame grid
         tree_frame.grid_rowconfigure(0, weight=1)
         tree_frame.grid_columnconfigure(0, weight=1)
 
@@ -306,12 +297,10 @@ class MarketingCampaignApp:
         viz_functions = [
             ("Age Distribution", DataViz.do_thi_phan_bo_do_tuoi),
             ("Web Visits", DataViz.do_thi_so_luot_truy_cap_web),
-            # ("Customer Loyalty", DataViz.do_thi_phan_bo_thoi_gian_gan_bo),
             ("Annual Spending", DataViz.do_thi_tong_chi_tieu_cac_nam),
             ("Campaign Performance", DataViz.hieu_suat_chien_dich),
             ("Number of customers accepting the offer", DataViz.so_khach_hang_chap_nhan_uu_dai),
             ("Average Product Quantities", DataViz.so_luong_trung_binh_cua_moi_san_pham),
-            # ("Income vs Expenditure", DataViz.so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien),
             ("Complaints by Age", DataViz.bieu_do_phan_tich_muc_do_phan_nan),
             ("Purchase Frequency by Age", DataViz.bieu_do_tan_suat_mua_hang_theo_do_tuoi)
         ]
@@ -384,7 +373,7 @@ class MarketingCampaignApp:
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
-        # Add a subtle animation effect
+        # Thêm hiệu ứng
         self.animate_widget(canvas_widget)
 
     def animate_widget(self, widget):
