@@ -201,41 +201,41 @@ def so_luong_trung_binh_cua_moi_san_pham():
     plt.tight_layout()  # Tự động điều chỉnh bố cục để biểu đồ không bị cắt
     return fig
 
-def so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien():
-    data_ct = Read.read()
-    # Chọn các cột sản phẩm liên quan
-    product_columns = ['MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds']
+# def so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien():
+#     data_ct = Read.read()
+#     # Chọn các cột sản phẩm liên quan
+#     product_columns = ['MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds']
 
-    # Tính tổng chi tiêu của mỗi khách hàng qua các loại sản phẩm
-    data_ct['Total_Expenditure'] = data_ct[product_columns].sum(axis=1)
+#     # Tính tổng chi tiêu của mỗi khách hàng qua các loại sản phẩm
+#     data_ct['Total_Expenditure'] = data_ct[product_columns].sum(axis=1)
 
-    # Loại bỏ các hàng thiếu dữ liệu thu nhập để đảm bảo tính chính xác khi vẽ biểu đồ
-    data_ct = data_ct.dropna(subset=['Income'])
+#     # Loại bỏ các hàng thiếu dữ liệu thu nhập để đảm bảo tính chính xác khi vẽ biểu đồ
+#     data_ct = data_ct.dropna(subset=['Income'])
 
-    # Đảm bảo cột Income là kiểu float để sử dụng cho việc vẽ biểu đồ
-    data_ct['Income'] = data_ct['Income'].astype(float)
+#     # Đảm bảo cột Income là kiểu float để sử dụng cho việc vẽ biểu đồ
+#     data_ct['Income'] = data_ct['Income'].astype(float)
 
-    # Lấy mẫu dữ liệu 50 khách hàng đầu tiên
-    sample_data = data_ct.head(50)
+#     # Lấy mẫu dữ liệu 50 khách hàng đầu tiên
+#     sample_data = data_ct.head(50)
 
-    # Vẽ biểu đồ đường so sánh thu nhập và chi tiêu
-    fig = plt.figure(figsize=(14, 8))
+#     # Vẽ biểu đồ đường so sánh thu nhập và chi tiêu
+#     fig = plt.figure(figsize=(14, 8))
 
-    # Vẽ đường cho thu nhập
-    plt.plot(sample_data.index, sample_data['Income'], label='Tổng thu nhập', color='blue', marker='o', linestyle='-', linewidth=2)
+#     # Vẽ đường cho thu nhập
+#     plt.plot(sample_data.index, sample_data['Income'], label='Tổng thu nhập', color='blue', marker='o', linestyle='-', linewidth=2)
 
-    # Vẽ đường cho chi tiêu
-    plt.plot(sample_data.index, sample_data['Total_Expenditure'], label='Tổng chi tiêu', color='red', marker='o', linestyle='-', linewidth=2)
+#     # Vẽ đường cho chi tiêu
+#     plt.plot(sample_data.index, sample_data['Total_Expenditure'], label='Tổng chi tiêu', color='red', marker='o', linestyle='-', linewidth=2)
 
-    # Thiết lập tiêu đề và nhãn trục
-    plt.title('So sánh Tổng Thu Nhập và Tổng Chi Tiêu (50 Khách Hàng Đầu Tiên)', fontsize=16)
-    plt.xlabel('Chỉ Số Khách Hàng', fontsize=14)
-    plt.ylabel('Giá trị (dvtt)', fontsize=14)
-    # Hiển thị legend
-    plt.legend()
-    # Đảm bảo các thành phần không bị chồng chéo
-    plt.tight_layout()
-    return fig
+#     # Thiết lập tiêu đề và nhãn trục
+#     plt.title('So sánh Tổng Thu Nhập và Tổng Chi Tiêu (50 Khách Hàng Đầu Tiên)', fontsize=16)
+#     plt.xlabel('Chỉ Số Khách Hàng', fontsize=14)
+#     plt.ylabel('Giá trị (dvtt)', fontsize=14)
+#     # Hiển thị legend
+#     plt.legend()
+#     # Đảm bảo các thành phần không bị chồng chéo
+#     plt.tight_layout()
+#     return fig
 
 def bieu_do_phan_tich_muc_do_phan_nan():
     data_ct = Read.read()

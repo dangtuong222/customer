@@ -311,7 +311,7 @@ class MarketingCampaignApp:
             ("Campaign Performance", DataViz.hieu_suat_chien_dich),
             ("Number of customers accepting the offer", DataViz.so_khach_hang_chap_nhan_uu_dai),
             ("Average Product Quantities", DataViz.so_luong_trung_binh_cua_moi_san_pham),
-            ("Income vs Expenditure", DataViz.so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien),
+            # ("Income vs Expenditure", DataViz.so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien),
             ("Complaints by Age", DataViz.bieu_do_phan_tich_muc_do_phan_nan),
             ("Purchase Frequency by Age", DataViz.bieu_do_tan_suat_mua_hang_theo_do_tuoi)
         ]
