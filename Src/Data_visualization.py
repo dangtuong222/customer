@@ -59,36 +59,6 @@ def do_thi_so_luot_truy_cap_web():
     plt.ylabel('Phần trăm')
     return fig
 
-# def do_thi_phan_bo_thoi_gian_gan_bo():
-#     data_ct = Read.read()
-#     current_year = date.today().year
-#     # Tính năm đăng ký của khách hàng
-#     data_ct['Dt_Customer'] = pd.to_datetime(data_ct['Dt_Customer'], errors='coerce')
-#     data_ct['Enrollment_Year'] = data_ct['Dt_Customer'].dt.year
-#     data_ct['Seniority'] = current_year - data_ct['Enrollment_Year']
-#     # Đổi tên cột 'Seniority' thành 'Total_Years' trong DataFrame
-#     tham_nien = data_ct[['Seniority']].rename(columns={'Seniority': 'Tổng Năm'})
-
-#     # Nhóm theo 'Tổng Năm' và tính số lượng mỗi nhóm
-#     tham_nien = tham_nien.groupby('Tổng Năm').size().reset_index(name='Số Lượng')
-
-#     # Tính phần trăm và làm tròn đến 2 chữ số thập phân
-#     tham_nien['Phần Trăm'] = (tham_nien['Số Lượng'] * 100 / tham_nien['Số Lượng'].sum()).round(2)
-
-#     # Chuyển đổi 'Tổng Năm' thành biến phân loại (categorical)
-#     tham_nien['Tổng Năm'] = tham_nien['Tổng Năm'].astype('category')
-    
-#     # Data
-#     labels = tham_nien['Tổng Năm']
-#     sizes = tham_nien['Phần Trăm']
-#     colors = ["#41B7C4", "#CCEDB1", "#F5CA63", "#808A87"]
-
-#     # Create a pie chart
-#     fig = plt.pie(sizes, labels=labels, colors=colors, autopct='%1.2f%%', startangle=140)
-#     plt.title('Phân bố thời gian gắn bó')
-#     plt.legend(bbox_to_anchor=(1, 1), loc='upper left', borderaxespad=0)
-#     return fig
-
 def do_thi_tong_chi_tieu_cac_nam():
     data_ct = Read.read()
     # Tính tổng chi tiêu của khách hàng
@@ -200,42 +170,6 @@ def so_luong_trung_binh_cua_moi_san_pham():
     plt.xticks(rotation=45)
     plt.tight_layout()  # Tự động điều chỉnh bố cục để biểu đồ không bị cắt
     return fig
-
-# def so_sanh_thu_nhap_va_chi_tieu_50_khach_dau_tien():
-#     data_ct = Read.read()
-#     # Chọn các cột sản phẩm liên quan
-#     product_columns = ['MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds']
-
-#     # Tính tổng chi tiêu của mỗi khách hàng qua các loại sản phẩm
-#     data_ct['Total_Expenditure'] = data_ct[product_columns].sum(axis=1)
-
-#     # Loại bỏ các hàng thiếu dữ liệu thu nhập để đảm bảo tính chính xác khi vẽ biểu đồ
-#     data_ct = data_ct.dropna(subset=['Income'])
-
-#     # Đảm bảo cột Income là kiểu float để sử dụng cho việc vẽ biểu đồ
-#     data_ct['Income'] = data_ct['Income'].astype(float)
-
-#     # Lấy mẫu dữ liệu 50 khách hàng đầu tiên
-#     sample_data = data_ct.head(50)
-
-#     # Vẽ biểu đồ đường so sánh thu nhập và chi tiêu
-#     fig = plt.figure(figsize=(14, 8))
-
-#     # Vẽ đường cho thu nhập
-#     plt.plot(sample_data.index, sample_data['Income'], label='Tổng thu nhập', color='blue', marker='o', linestyle='-', linewidth=2)
-
-#     # Vẽ đường cho chi tiêu
-#     plt.plot(sample_data.index, sample_data['Total_Expenditure'], label='Tổng chi tiêu', color='red', marker='o', linestyle='-', linewidth=2)
-
-#     # Thiết lập tiêu đề và nhãn trục
-#     plt.title('So sánh Tổng Thu Nhập và Tổng Chi Tiêu (50 Khách Hàng Đầu Tiên)', fontsize=16)
-#     plt.xlabel('Chỉ Số Khách Hàng', fontsize=14)
-#     plt.ylabel('Giá trị (dvtt)', fontsize=14)
-#     # Hiển thị legend
-#     plt.legend()
-#     # Đảm bảo các thành phần không bị chồng chéo
-#     plt.tight_layout()
-#     return fig
 
 def bieu_do_phan_tich_muc_do_phan_nan():
     data_ct = Read.read()

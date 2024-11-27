@@ -58,11 +58,15 @@ def Create(ID, Year_Birth, Education, Marital_Status, Income, Dt_Customer, Recen
         # Đảm bảo cột của bản ghi mới phù hợp với DataFrame hiện tại
         new_record_df = new_record_df.reindex(columns=df.columns)
 
+        # Kiểm tra xem có giá trị trống hay không
+        if new_record_df.isin([""]).any().any():
+            messagebox.showerror("Lỗi", "Một hoặc nhiều cột có giá trị trống.")
+            return None
+
         # Gộp bản ghi mới vào DataFrame hiện tại
         df = pd.concat([df, new_record_df], ignore_index=True)
 
         # Áp dụng các bước làm sạch dữ liệu
-        Data_cleaning.remove_null(df)
         Data_cleaning.update_Education(df)
         Data_cleaning.update_Marital_status(df)
         df = Data_cleaning.delete_columm(df)
@@ -74,5 +78,5 @@ def Create(ID, Year_Birth, Education, Marital_Status, Income, Dt_Customer, Recen
             
     except Exception as e:
         # Hiển thị lỗi nếu có lỗi xảy ra
-        messagebox.showerror("Lỗi", e)
+        messagebox.showerror("Lỗi", str(e))
         return None
